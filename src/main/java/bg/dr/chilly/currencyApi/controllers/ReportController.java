@@ -1,7 +1,7 @@
-package bg.dr.chilly.fixerIO.controllers;
+package bg.dr.chilly.currencyApi.controllers;
 
-import bg.dr.chilly.fixerIO.io.URLReaderImpl;
-import bg.dr.chilly.fixerIO.service.BaseRateService;
+import bg.dr.chilly.currencyApi.io.URLReaderImpl;
+import bg.dr.chilly.currencyApi.service.BaseRateService;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import org.springframework.http.MediaType;

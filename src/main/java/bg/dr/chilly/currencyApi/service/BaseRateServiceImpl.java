@@ -1,19 +1,18 @@
-package bg.dr.chilly.fixerIO.service;
+package bg.dr.chilly.currencyApi.service;
 
 import java.time.LocalDate;
 import java.util.List;
 
-import bg.dr.chilly.fixerIO.Constants;
-import bg.dr.chilly.fixerIO.domain.entities.BaseRate;
-import bg.dr.chilly.fixerIO.domain.entities.Rate;
-import bg.dr.chilly.fixerIO.domain.models.dtos.BaseRateJSONImportDTO;
-import bg.dr.chilly.fixerIO.domain.models.view.ReportViewDTO;
-import bg.dr.chilly.fixerIO.repository.BaseRateRepository;
-import bg.dr.chilly.fixerIO.repository.RateRepository;
+import bg.dr.chilly.currencyApi.Constants;
+import bg.dr.chilly.currencyApi.domain.entities.BaseRate;
+import bg.dr.chilly.currencyApi.domain.entities.Rate;
+import bg.dr.chilly.currencyApi.domain.models.dtos.BaseRateJSONImportDTO;
+import bg.dr.chilly.currencyApi.domain.models.view.ReportViewDTO;
+import bg.dr.chilly.currencyApi.repository.BaseRateRepository;
+import bg.dr.chilly.currencyApi.repository.RateRepository;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

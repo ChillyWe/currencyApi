@@ -1,4 +1,4 @@
-package bg.dr.chilly.fixerIO.exceptions;
+package bg.dr.chilly.currencyApi.exceptions;
 
 import lombok.NoArgsConstructor;
 

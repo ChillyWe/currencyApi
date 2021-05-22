@@ -9,9 +9,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>bg.dr.chilly</groupId>
-	<artifactId>fixerIO</artifactId>
+	<artifactId>currencyApi</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>fixerIO</name>
+	<name>currencyApi</name>
 	<description>Demo project for Spring Boot</description>
 
 	<properties>

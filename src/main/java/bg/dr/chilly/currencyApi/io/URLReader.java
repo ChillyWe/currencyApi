@@ -1,4 +1,4 @@
-package bg.dr.chilly.fixerIO.io;
+package bg.dr.chilly.currencyApi.io;
 
 import java.net.URL;
 

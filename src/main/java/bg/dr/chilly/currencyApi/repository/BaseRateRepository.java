@@ -1,7 +1,7 @@
-package bg.dr.chilly.fixerIO.repository;
+package bg.dr.chilly.currencyApi.repository;
 
-import bg.dr.chilly.fixerIO.domain.entities.BaseRate;
-import bg.dr.chilly.fixerIO.domain.entities.Rate;
+import bg.dr.chilly.currencyApi.domain.entities.BaseRate;
+import bg.dr.chilly.currencyApi.domain.entities.Rate;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

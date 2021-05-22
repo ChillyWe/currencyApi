@@ -1,4 +1,4 @@
-package bg.dr.chilly.fixerIO.domain.entities;
+package bg.dr.chilly.currencyApi.domain.entities;
 
 import lombok.AccessLevel;
 import lombok.Data;

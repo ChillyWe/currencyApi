@@ -1,4 +1,4 @@
-package bg.dr.chilly.fixerIO;
+package bg.dr.chilly.currencyApi;
 
 public class Constants {
 

@@ -1,14 +1,14 @@
-package bg.dr.chilly.fixerIO.controllers;
+package bg.dr.chilly.currencyApi.controllers;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import bg.dr.chilly.fixerIO.Constants;
-import bg.dr.chilly.fixerIO.exceptions.FixerException;
-import bg.dr.chilly.fixerIO.io.URLReader;
-import bg.dr.chilly.fixerIO.io.URLReaderImpl;
+import bg.dr.chilly.currencyApi.Constants;
+import bg.dr.chilly.currencyApi.exceptions.FixerException;
+import bg.dr.chilly.currencyApi.io.URLReader;
+import bg.dr.chilly.currencyApi.io.URLReaderImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 

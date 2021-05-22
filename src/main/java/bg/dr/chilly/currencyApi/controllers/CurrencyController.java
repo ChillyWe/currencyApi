@@ -1,7 +1,7 @@
-package bg.dr.chilly.fixerIO.controllers;
+package bg.dr.chilly.currencyApi.controllers;
 
-import bg.dr.chilly.fixerIO.Constants;
-import bg.dr.chilly.fixerIO.io.URLReaderImpl;
+import bg.dr.chilly.currencyApi.Constants;
+import bg.dr.chilly.currencyApi.io.URLReaderImpl;
 import org.springframework.http.MediaType;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;

@@ -1,4 +1,4 @@
-package bg.dr.chilly.fixerIO.controllers;
+package bg.dr.chilly.currencyApi.controllers;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -6,11 +6,11 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import bg.dr.chilly.fixerIO.Constants;
-import bg.dr.chilly.fixerIO.domain.models.dtos.BaseRateJSONImportDTO;
-import bg.dr.chilly.fixerIO.io.URLReaderImpl;
-import bg.dr.chilly.fixerIO.service.BaseRateService;
-import bg.dr.chilly.fixerIO.service.BaseRateServiceImpl;
+import bg.dr.chilly.currencyApi.Constants;
+import bg.dr.chilly.currencyApi.domain.models.dtos.BaseRateJSONImportDTO;
+import bg.dr.chilly.currencyApi.io.URLReaderImpl;
+import bg.dr.chilly.currencyApi.service.BaseRateService;
+import bg.dr.chilly.currencyApi.service.BaseRateServiceImpl;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
