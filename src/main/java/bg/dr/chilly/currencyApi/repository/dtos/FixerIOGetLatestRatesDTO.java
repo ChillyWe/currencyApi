@@ -1,4 +1,4 @@
-package bg.dr.chilly.currencyApi.domain.models.dtos;
+package bg.dr.chilly.currencyApi.repository.dtos;
 
 import lombok.AccessLevel;
 import lombok.Data;
@@ -12,12 +12,16 @@ import java.util.Map;
 @Data
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class BaseRateJSONImportDTO {
+public class FixerIOGetLatestRatesDTO {
 
     Boolean success;
+
     Long timestamp;
+
     String base;
+
     LocalDate date;
+
     Map<String, Double> rates = new HashMap<>();
 
 }
