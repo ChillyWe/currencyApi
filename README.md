@@ -1,2 +1,2 @@
-# fixerIO
-Demo project
+# currencyApi
+Demo project with Spring Boot

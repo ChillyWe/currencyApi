@@ -1,4 +1,4 @@
-package bg.dr.chilly.currencyApi;
+package bg.dr.chilly.currencyApi.util;
 
 public class Constants {
 

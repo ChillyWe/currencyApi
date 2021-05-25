@@ -3,14 +3,7 @@ package bg.dr.chilly.currencyApi.controllers;
 import bg.dr.chilly.currencyApi.repository.entities.CurrencyRateEntity;
 import bg.dr.chilly.currencyApi.service.CurrencyRateService;
 import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
 
-import bg.dr.chilly.currencyApi.Constants;
-import bg.dr.chilly.currencyApi.exceptions.FixerException;
-import bg.dr.chilly.currencyApi.util.URLReader;
-import bg.dr.chilly.currencyApi.util.URLReaderImpl;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.AccessLevel;
@@ -18,8 +11,6 @@ import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -27,7 +18,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
@@ -50,7 +40,7 @@ public class CurrencyRateController {
 				.body("Successful");
 	}
 
-	@GetMapping(path = "/currency", produces = MediaType.APPLICATION_JSON_VALUE)
+	@GetMapping(path = "/get-all", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<List<CurrencyRateEntity>> getAll(Model model) {
 
 //		return readJSONfromURI(String.format("http://data.fixer.io/api/symbols?access_key=%s", Constants.KEY_FOR_FIXER));
