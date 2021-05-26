@@ -6,6 +6,7 @@ import bg.dr.chilly.currencyApi.repository.dtos.FixerIOGetLatestRatesDTO;
 import bg.dr.chilly.currencyApi.repository.dtos.FixerIONamesFromJSONImportDTO;
 import bg.dr.chilly.currencyApi.repository.entities.CurrencyQuoteNameEntity;
 import bg.dr.chilly.currencyApi.repository.entities.CurrencyRateEntity;
+import bg.dr.chilly.currencyApi.repository.projection.CurrencyRateView;
 import bg.dr.chilly.currencyApi.util.URLReader;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -17,15 +18,16 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Paths;
 import java.time.Instant;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import javax.transaction.Transactional;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
@@ -34,6 +36,7 @@ import org.springframework.stereotype.Service;
 public class CurrencyRateServiceImpl implements CurrencyRateService {
 
   private static final BigDecimal DEFAULT_AMOUNT = BigDecimal.ONE;
+
   @Autowired
   ObjectMapper objectMapper;
   @Autowired
@@ -53,6 +56,12 @@ public class CurrencyRateServiceImpl implements CurrencyRateService {
         .readValue(Paths.get("help/currencyRates_20210521.json").toFile(),
             FixerIOGetLatestRatesDTO.class);
     createEntitiesFromFixerResponse(fixerResponse);
+  }
+
+  @Override
+  @Transactional(readOnly = true)
+  public List<CurrencyRateView> getAll() {
+    return currencyRateRepository.findAllViews();
   }
 
   // Method to get data from database

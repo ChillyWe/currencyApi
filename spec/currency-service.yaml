@@ -16,7 +16,7 @@ tags:
     description: Currency Rate Controler
 
 paths:
-  /rates//get-all:
+  /rates/get-all:
     get:
       summary: Return all currency rates.
       #      parameters:
