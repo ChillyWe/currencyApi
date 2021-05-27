@@ -1,9 +1,11 @@
-package bg.dr.chilly.currencyApi.repository.projection;
+package bg.dr.chilly.currencyApi.db.projection;
 
 import java.math.BigDecimal;
 import java.time.Instant;
 
 public interface CurrencyRateView {
+
+    Long getId();
 
     Instant getCreatedOn();
 

@@ -1,4 +1,4 @@
-package bg.dr.chilly.currencyApi.repository.entities;
+package bg.dr.chilly.currencyApi.db.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

@@ -1,4 +1,4 @@
-package bg.dr.chilly.currencyApi.repository.entities;
+package bg.dr.chilly.currencyApi.db.model;
 
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -10,7 +10,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Version;
 import lombok.AccessLevel;
@@ -36,6 +35,7 @@ public class CurrencyRateEntity {
   Long id;
 
   @CreatedDate
+  @Column(name = "created_on")
   Instant createdOn;
 
   @Column(length = 3)
@@ -48,7 +48,7 @@ public class CurrencyRateEntity {
   @Column(precision = 33, scale = 18)
   BigDecimal rate;
 
-  @Column(precision = 33, scale = 18)
+  @Column(name = "reverse_rate", precision = 33, scale = 18)
   BigDecimal reverseRate;
 
   @Column(length = 50)

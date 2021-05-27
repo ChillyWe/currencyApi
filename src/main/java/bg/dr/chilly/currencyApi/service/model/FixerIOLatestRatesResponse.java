@@ -1,4 +1,4 @@
-package bg.dr.chilly.currencyApi.repository.dtos;
+package bg.dr.chilly.currencyApi.service.model;
 
 import lombok.AccessLevel;
 import lombok.Data;
@@ -12,7 +12,7 @@ import java.util.Map;
 @Data
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class FixerIOGetLatestRatesDTO {
+public class FixerIOLatestRatesResponse {
 
     Boolean success;
 

@@ -1,10 +1,10 @@
-package bg.dr.chilly.currencyApi.repository;
+package bg.dr.chilly.currencyApi.db.repository;
 
-import bg.dr.chilly.currencyApi.repository.entities.CurrencyRateEntity;
+import bg.dr.chilly.currencyApi.db.model.CurrencyRateEntity;
 
 import java.util.List;
 
-import bg.dr.chilly.currencyApi.repository.projection.CurrencyRateView;
+import bg.dr.chilly.currencyApi.db.projection.CurrencyRateView;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -14,7 +14,7 @@ import org.springframework.stereotype.Repository;
 public interface CurrencyRateRepository extends JpaRepository<CurrencyRateEntity, String> {
 
     @Query("SELECT cr FROM CurrencyRateEntity cr " +
-            "LEFT JOIN FETCH CurrencyQuoteNameEntity cqn ")
+            "LEFT JOIN FETCH cr.quote ")
     List<CurrencyRateView> findAllViews();
 
 }

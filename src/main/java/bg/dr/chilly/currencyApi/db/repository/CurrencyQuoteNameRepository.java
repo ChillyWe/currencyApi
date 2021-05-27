@@ -1,6 +1,6 @@
-package bg.dr.chilly.currencyApi.repository;
+package bg.dr.chilly.currencyApi.db.repository;
 
-import bg.dr.chilly.currencyApi.repository.entities.CurrencyQuoteNameEntity;
+import bg.dr.chilly.currencyApi.db.model.CurrencyQuoteNameEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

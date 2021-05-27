@@ -1,12 +1,12 @@
 package bg.dr.chilly.currencyApi.service;
 
-import bg.dr.chilly.currencyApi.repository.CurrencyQuoteNameRepository;
-import bg.dr.chilly.currencyApi.repository.CurrencyRateRepository;
-import bg.dr.chilly.currencyApi.repository.dtos.FixerIOGetLatestRatesDTO;
-import bg.dr.chilly.currencyApi.repository.dtos.FixerIONamesFromJSONImportDTO;
-import bg.dr.chilly.currencyApi.repository.entities.CurrencyQuoteNameEntity;
-import bg.dr.chilly.currencyApi.repository.entities.CurrencyRateEntity;
-import bg.dr.chilly.currencyApi.repository.projection.CurrencyRateView;
+import bg.dr.chilly.currencyApi.db.repository.CurrencyQuoteNameRepository;
+import bg.dr.chilly.currencyApi.db.repository.CurrencyRateRepository;
+import bg.dr.chilly.currencyApi.service.model.FixerIOLatestRatesResponse;
+import bg.dr.chilly.currencyApi.service.model.FixerIONamesResponse;
+import bg.dr.chilly.currencyApi.db.model.CurrencyQuoteNameEntity;
+import bg.dr.chilly.currencyApi.db.model.CurrencyRateEntity;
+import bg.dr.chilly.currencyApi.db.projection.CurrencyRateView;
 import bg.dr.chilly.currencyApi.util.URLReader;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -52,9 +52,9 @@ public class CurrencyRateServiceImpl implements CurrencyRateService {
 
 //    getFixerIoResponse(String.format("http://data.fixer.io/api/symbols?access_key=%s", Constants.KEY_FOR_FIXER));
 
-    FixerIOGetLatestRatesDTO fixerResponse = objectMapper
+    FixerIOLatestRatesResponse fixerResponse = objectMapper
         .readValue(Paths.get("help/currencyRates_20210521.json").toFile(),
-            FixerIOGetLatestRatesDTO.class);
+            FixerIOLatestRatesResponse.class);
     createEntitiesFromFixerResponse(fixerResponse);
   }
 
@@ -83,8 +83,8 @@ public class CurrencyRateServiceImpl implements CurrencyRateService {
     URL url;
     try {
       url = new URL(urlString);
-      FixerIOGetLatestRatesDTO fixerResponse = objectMapper
-          .readValue(url, FixerIOGetLatestRatesDTO.class);
+      FixerIOLatestRatesResponse fixerResponse = objectMapper
+          .readValue(url, FixerIOLatestRatesResponse.class);
       createEntitiesFromFixerResponse(fixerResponse);
     } catch (MalformedURLException e) {
       // TODO: 5/25/21 handle with custom error
@@ -122,11 +122,11 @@ public class CurrencyRateServiceImpl implements CurrencyRateService {
 
   @Transactional
   public void createBaseCurrencyQuoteNames() throws IOException {
-    FixerIONamesFromJSONImportDTO fixerIONamesFromJSONImportDTO = objectMapper
+    FixerIONamesResponse fixerIONamesResponse = objectMapper
         .readValue(Paths.get("help/currencyQuoteTranslation.json").toFile(),
-            FixerIONamesFromJSONImportDTO.class);
-    if (fixerIONamesFromJSONImportDTO.getSuccess()) {
-      Map<String, String> quoteNames = fixerIONamesFromJSONImportDTO.getSymbols();
+            FixerIONamesResponse.class);
+    if (fixerIONamesResponse.getSuccess()) {
+      Map<String, String> quoteNames = fixerIONamesResponse.getSymbols();
       quoteNames.forEach((key, value) -> currencyQuoteNameRepository
           .saveAndFlush(CurrencyQuoteNameEntity.builder().id(key).name(value)
               .source("FixerIO").build()));
@@ -137,7 +137,7 @@ public class CurrencyRateServiceImpl implements CurrencyRateService {
   }
 
   @Transactional
-  public void createEntitiesFromFixerResponse(FixerIOGetLatestRatesDTO fixerResponse) {
+  public void createEntitiesFromFixerResponse(FixerIOLatestRatesResponse fixerResponse) {
     Long timestamp = fixerResponse.getTimestamp();
     String base = fixerResponse.getBase();
 

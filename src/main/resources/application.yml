@@ -1,13 +1,11 @@
 server:
   port: 8080
   servlet:
-    context-path: /api
-
-logging:
-  level: 
-    org: INFO 
+    context-path: /currency
 
 spring:
+  application:
+    name: currency-service
   datasource:
     url: jdbc:mysql://localhost:3306/currencies_db?useSSL=false&createDatabaseIfNotExist=true&useUnicode=yes&characterEncoding=UTF-8&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC
     username: root
@@ -27,6 +25,6 @@ spring:
     password: 1919
     url: jdbc:mysql://localhost:3306/currencies_db
 
-springdoc:
-  api-docs:
-    path: /docs
+logging:
+  level:
+    org: INFO

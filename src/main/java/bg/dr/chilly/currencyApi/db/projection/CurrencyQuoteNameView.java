@@ -1,4 +1,4 @@
-package bg.dr.chilly.currencyApi.repository.projection;
+package bg.dr.chilly.currencyApi.db.projection;
 
 public interface CurrencyQuoteNameView {
 

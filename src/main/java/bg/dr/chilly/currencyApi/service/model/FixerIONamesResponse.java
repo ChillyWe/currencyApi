@@ -1,4 +1,4 @@
-package bg.dr.chilly.currencyApi.repository.dtos;
+package bg.dr.chilly.currencyApi.service.model;
 
 
 import java.util.HashMap;
@@ -11,7 +11,7 @@ import lombok.experimental.FieldDefaults;
 @Data
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class FixerIONamesFromJSONImportDTO {
+public class FixerIONamesResponse {
 
     Boolean success;
 
