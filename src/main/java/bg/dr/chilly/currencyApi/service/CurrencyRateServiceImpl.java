@@ -21,6 +21,7 @@ import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -47,15 +48,20 @@ public class CurrencyRateServiceImpl implements CurrencyRateService {
   CurrencyRateRepository currencyRateRepository;
 
   @Override
-  public void create() throws IOException {
+  public void create() {
     createBaseCurrencyQuoteNames();
 
 //    getFixerIoResponse(String.format("http://data.fixer.io/api/symbols?access_key=%s", Constants.KEY_FOR_FIXER));
 
-    FixerIOLatestRatesResponse fixerResponse = objectMapper
-        .readValue(Paths.get("help/currencyRates_20210521.json").toFile(),
-            FixerIOLatestRatesResponse.class);
-    createEntitiesFromFixerResponse(fixerResponse);
+    try {
+        FixerIOLatestRatesResponse fixerResponse = objectMapper
+            .readValue(Paths.get("help/currencyRates_20210521.json").toFile(),
+                FixerIOLatestRatesResponse.class);
+        createEntitiesFromFixerResponse(fixerResponse);
+    } catch (IOException e) {
+        e.printStackTrace();
+    }
+
   }
 
   @Override
@@ -64,20 +70,10 @@ public class CurrencyRateServiceImpl implements CurrencyRateService {
     return currencyRateRepository.findAllViews();
   }
 
-  // Method to get data from database
-//  public ReportViewDTO getOneByDateAndCurrency(String date, String currency) {
-//		ReportViewDTO view = new ReportViewDTO();
-//		List<Rate> allRates = this.baseRateRepository.findByBaseCurrencyAndDate(LocalDate.parse(date), Constants.EUR_AS_STRING_VALUE);
-//
-//		for (Rate rate : allRates) {
-//			if (rate.getSymbols().equalsIgnoreCase(currency)) {
-//				view.setBase(Constants.EUR_AS_STRING_VALUE);
-//				view.setCurrency(rate.getSymbols());
-//				view.setRate(rate.getRateValue());
-//			}
-//		}
-//		return view;
-//  }
+  public String createCurrencyRateAndQuoteName(){
+      // TODO: 5/27/21 create quote name and currency rates and save them
+      return "";
+  }
 
   private void getFixerIoResponse(String urlString) {
     URL url;
@@ -105,11 +101,11 @@ public class CurrencyRateServiceImpl implements CurrencyRateService {
 
 //  public static void main(String[] args) throws IOException {
 //    ObjectMapper mapper = new ObjectMapper();
-//    FixerIONamesFromJSONImportDTO fixerIONamesFromJSONImportDTO = mapper
-//        .readValue(Paths.get("help/currencyQuoteTranslation.json").toFile(), FixerIONamesFromJSONImportDTO.class);
+//    FixerIONamesResponse namesResponse = mapper
+//        .readValue(Paths.get("help/currencyQuoteTranslation.json").toFile(), FixerIONamesResponse.class);
 //
-//    if (fixerIONamesFromJSONImportDTO.getSuccess()) {
-//      Map<String, String> quoteNames = fixerIONamesFromJSONImportDTO.getSymbols();
+//    if (namesResponse.getSuccess()) {
+//      Map<String, String> quoteNames = namesResponse.getSymbols();
 //      List<CurrencyQuoteNameEntity> names = quoteNames.entrySet().stream().map(kvp -> {
 //        return CurrencyQuoteNameEntity.builder().id(kvp.getKey()).name(kvp.getValue())
 //            .source("FixerIo").build();
@@ -121,19 +117,20 @@ public class CurrencyRateServiceImpl implements CurrencyRateService {
 //  }
 
   @Transactional
-  public void createBaseCurrencyQuoteNames() throws IOException {
-    FixerIONamesResponse fixerIONamesResponse = objectMapper
-        .readValue(Paths.get("help/currencyQuoteTranslation.json").toFile(),
-            FixerIONamesResponse.class);
-    if (fixerIONamesResponse.getSuccess()) {
-      Map<String, String> quoteNames = fixerIONamesResponse.getSymbols();
-      quoteNames.forEach((key, value) -> currencyQuoteNameRepository
-          .saveAndFlush(CurrencyQuoteNameEntity.builder().id(key).name(value)
-              .source("FixerIO").build()));
-      String debug = "";
-    } else {
-      throw new RuntimeException("invalit fail");
-    }
+  public void createBaseCurrencyQuoteNames() {
+      try {
+          FixerIONamesResponse fixerIONamesResponse = objectMapper
+              .readValue(Paths.get("help/currencyQuoteTranslation.json").toFile(),
+                  FixerIONamesResponse.class);
+          if (fixerIONamesResponse.getSuccess()) {
+              Map<String, String> quoteNames = fixerIONamesResponse.getSymbols();
+              quoteNames.forEach((key, value) -> currencyQuoteNameRepository
+                      .saveAndFlush(CurrencyQuoteNameEntity.builder().id(key).name(value).source("FixerIO").build()));
+          }
+      } catch (IOException e) {
+          log.error("Error when read help/currencyQuoteTranslation.json");
+          e.printStackTrace();
+      }
   }
 
   @Transactional
@@ -145,11 +142,14 @@ public class CurrencyRateServiceImpl implements CurrencyRateService {
       Optional<CurrencyQuoteNameEntity> quoteNameOptional = currencyQuoteNameRepository
           .findById(kvp.getKey());
       quoteNameOptional.ifPresent(currencyQuoteNameEntity -> currencyRateRepository.saveAndFlush(
-          CurrencyRateEntity.builder().base(base).rate(BigDecimal.valueOf(kvp.getValue()))
+          CurrencyRateEntity.builder()
+              .createdOn(Instant.now())
+              .base(base)
+              .rate(BigDecimal.valueOf(kvp.getValue()))
               .quote(currencyQuoteNameEntity)
               .reverseRate(DEFAULT_AMOUNT.divide(BigDecimal.valueOf(kvp.getValue()), 18, RoundingMode.HALF_DOWN))
-              .source("FixerIO").sourceCreatedOn(Instant.ofEpochSecond(timestamp)).build()));
-      String debug = "";
+              .source("FixerIO")
+              .sourceCreatedOn(Instant.ofEpochSecond(timestamp)).build()));
     });
   }
 

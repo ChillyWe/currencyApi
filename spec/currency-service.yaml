@@ -10,24 +10,16 @@ info:
   version: '0.0.1-SNAPSHOT'
 
 servers:
-  - url: //127.0.0.1:8080/api/
+  - url: //127.0.0.1:8080
 tags:
   - name: Currency rate api
     description: Currency Rate Controler
 
 paths:
-  /rates/get-all:
+  /rates:
     get:
       summary: Return all currency rates.
-      #      parameters:
-      #        - name: userId
-      #          in: path
-      #          required: true
-      #          description: The ID of the user to return.
-      #          schema:
-      #            type: integer
-      #            format: int64
-      #            minimum: 1
+      operationId: getAllRates
       responses:
         200:
           description: List of currency rates.
@@ -38,12 +30,57 @@ paths:
                 items:
                   $ref: '#/components/schemas/CurrencyRate'
         400:
-          description: The specified user ID is invalid (not a number).
+          description: Bad data
         404:
-          description: A user with the specified ID was not found.
+          description: Not found
         default:
           description: Unexpected error
-
+    post:
+      summary: Create currency rates and quote name.
+      operationId: createRate
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCurrencyRate'
+      responses:
+        201:
+          description: Created
+          content:
+            text/plain:
+              schema:
+                type: string
+        400:
+          description: Bad data
+        default:
+          description: Unexpected error
+#    post:
+#      summary: Create new rate.
+#            parameters:
+#              - name: userId
+#                in: path
+#                required: true
+#                description: The ID of the user to return.
+#                schema:
+#                  type: integer
+#                  format: int64
+#                  minimum: 1
+#      responses:
+#        200:
+#          description: List of currency rates.
+#          content:
+#            application/json:
+#              schema:
+#                type: array
+#                items:
+#                  $ref: '#/components/schemas/CurrencyRate'
+#        400:
+#          description: Bad data
+#        404:
+#          description: Not found
+#        default:
+#          description: Unexpected error
 components:
   schemas:
     CurrencyRate:
@@ -75,6 +112,19 @@ components:
         - base
         - quoteName
         - rate
+    CreateCurrencyRate:
+      properties:
+        base:
+          type: string
+        quoteName:
+          $ref: '#/components/schemas/CreateCurrencyQuoteName'
+        rate:
+          type: integer
+          format: int64
+      required:
+        - base
+        - quoteName
+        - rate
     CurrencyQuoteName:
       properties:
         id:
@@ -87,3 +137,12 @@ components:
         - id
         - name
         - source
+    CreateCurrencyQuoteName:
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+      required:
+        - id
+        - name

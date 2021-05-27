@@ -14,7 +14,7 @@ import org.springframework.stereotype.Repository;
 public interface CurrencyRateRepository extends JpaRepository<CurrencyRateEntity, String> {
 
     @Query("SELECT cr FROM CurrencyRateEntity cr " +
-            "LEFT JOIN FETCH cr.quote ")
+            "LEFT JOIN FETCH cr.quote ORDER BY cr.createdOn DESC ")
     List<CurrencyRateView> findAllViews();
 
 }
