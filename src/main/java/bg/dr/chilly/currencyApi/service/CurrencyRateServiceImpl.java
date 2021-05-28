@@ -47,12 +47,11 @@ public class CurrencyRateServiceImpl implements CurrencyRateService {
   @Autowired
   CurrencyRateRepository currencyRateRepository;
 
+  // helper method to create currencies and quote names from json files
   @Override
   public void create() {
     createBaseCurrencyQuoteNames();
-
 //    getFixerIoResponse(String.format("http://data.fixer.io/api/symbols?access_key=%s", Constants.KEY_FOR_FIXER));
-
     try {
         FixerIOLatestRatesResponse fixerResponse = objectMapper
             .readValue(Paths.get("help/currencyRates_20210521.json").toFile(),
@@ -61,7 +60,6 @@ public class CurrencyRateServiceImpl implements CurrencyRateService {
     } catch (IOException e) {
         e.printStackTrace();
     }
-
   }
 
   @Override

@@ -6,6 +6,7 @@ import bg.dr.chilly.currencyApi.api.model.CreateCurrencyRateDTO;
 import bg.dr.chilly.currencyApi.api.model.CurrencyRateDTO;
 import bg.dr.chilly.currencyApi.service.CurrencyRateService;
 import bg.dr.chilly.currencyApi.service.mapper.CurrencyRateMapper;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -14,8 +15,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -28,7 +27,7 @@ public class RatesApiDelegateImpl implements RatesApiDelegate {
     final CurrencyRateMapper currencyRateMapper;
 
     /**
-     * GET /rates : Return all currency rates.
+     * GET /rates : Return all currency rates ordered by created date descending
      */
     @Override
     public ResponseEntity<List<CurrencyRateDTO>> getAllRates() {
@@ -37,10 +36,37 @@ public class RatesApiDelegateImpl implements RatesApiDelegate {
     }
 
     /**
-     * POST /rates : Create currency rates and quote name.
+     * POST /rates : Create currency rate and quote name
      */
     @Override
     public ResponseEntity<String> createRate(CreateCurrencyRateDTO createCurrencyRateDTO) {
+
+        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+    }
+
+    /**
+     * GET /rates/{rateId} : Get currency rate for given Id
+     */
+    @Override
+    public ResponseEntity<CurrencyRateDTO> getRate(Long rateId) {
+
+        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+    }
+
+    /**
+     * PUT /rates/{rateId} : Update currency rate for given Id
+     */
+    @Override
+    public ResponseEntity<CurrencyRateDTO> updateRate(Long rateId) {
+
+        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+    }
+
+    /**
+     * DELETE /rates/{rateId} : Delete currency rate for given Id
+     */
+    @Override
+    public ResponseEntity<CurrencyRateDTO> deleteRate(Long rateId) {
 
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
     }

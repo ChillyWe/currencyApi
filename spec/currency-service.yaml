@@ -18,11 +18,11 @@ tags:
 paths:
   /rates:
     get:
-      summary: Return all currency rates.
+      summary: Return all currency rates ordered by created date descending
       operationId: getAllRates
       responses:
         200:
-          description: List of currency rates.
+          description: Ok
           content:
             application/json:
               schema:
@@ -36,7 +36,7 @@ paths:
         default:
           description: Unexpected error
     post:
-      summary: Create currency rates and quote name.
+      summary: Create currency rate and quote name
       operationId: createRate
       requestBody:
         required: true
@@ -55,32 +55,82 @@ paths:
           description: Bad data
         default:
           description: Unexpected error
-#    post:
-#      summary: Create new rate.
-#            parameters:
-#              - name: userId
-#                in: path
-#                required: true
-#                description: The ID of the user to return.
-#                schema:
-#                  type: integer
-#                  format: int64
-#                  minimum: 1
-#      responses:
-#        200:
-#          description: List of currency rates.
-#          content:
-#            application/json:
-#              schema:
-#                type: array
-#                items:
-#                  $ref: '#/components/schemas/CurrencyRate'
-#        400:
-#          description: Bad data
-#        404:
-#          description: Not found
-#        default:
-#          description: Unexpected error
+  /rates/{rateId}:
+    get:
+      summary: Get currency rate for given Id
+      operationId: getRate
+      parameters:
+        - name: rateId
+          in: path
+          description: rateId
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CurrencyRate'
+        400:
+          description: Bad data
+        404:
+          description: Not found
+        default:
+          description: Unexpected error
+    put:
+      summary: Update currency rate for given Id
+      operationId: updateRate
+      parameters:
+        - name: rateId
+          in: path
+          description: rateId
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CurrencyRate'
+        204:
+          description: No Content
+        400:
+          description: Bad data
+        404:
+          description: Not found
+        default:
+          description: Unexpected error
+    delete:
+      summary: Delete currency rate for given Id
+      operationId: deleteRate
+      parameters:
+        - name: rateId
+          in: path
+          description: rateId
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CurrencyRate'
+        400:
+          description: Bad data
+        404:
+          description: Not found
+        default:
+          description: Unexpected error
+
 components:
   schemas:
     CurrencyRate:
@@ -96,11 +146,11 @@ components:
         quoteName:
           $ref: '#/components/schemas/CurrencyQuoteName'
         rate:
-          type: integer
-          format: int64
+          type: number
+          format: currency
         reverseRate:
-          type: integer
-          format: int64
+          type: number
+          format: currency
         source:
           type: string
         sourceCreatedOn:
@@ -112,6 +162,7 @@ components:
         - base
         - quoteName
         - rate
+        - reverseRate
     CreateCurrencyRate:
       properties:
         base:
