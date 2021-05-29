@@ -68,9 +68,14 @@ public class CurrencyRateServiceImpl implements CurrencyRateService {
     return currencyRateRepository.findAllViews();
   }
 
-  public String createCurrencyRateAndQuoteName(){
-      // TODO: 5/27/21 create quote name and currency rates and save them
-      return "";
+  @Override
+  @Transactional
+  public String createCurrencyRateAndQuoteName(String currencyQuoteId, String currencyQuoteName, String base, BigDecimal rate){
+      CurrencyQuoteNameEntity currencyQuoteNameEntity = createCurrencyQuoteName(currencyQuoteId, currencyQuoteName, "Custom");
+      currencyQuoteNameRepository.saveAndFlush(currencyQuoteNameEntity);
+      CurrencyRateEntity currencyRateEntity = createCurrencyRate(base, rate, "Custom", Optional.of(Instant.now()), currencyQuoteNameEntity);
+      currencyRateRepository.saveAndFlush(currencyRateEntity);
+      return "Currency rate with id : " + currencyRateEntity.getId() + " was created ";
   }
 
   private void getFixerIoResponse(String urlString) {
@@ -140,15 +145,29 @@ public class CurrencyRateServiceImpl implements CurrencyRateService {
       Optional<CurrencyQuoteNameEntity> quoteNameOptional = currencyQuoteNameRepository
           .findById(kvp.getKey());
       quoteNameOptional.ifPresent(currencyQuoteNameEntity -> currencyRateRepository.saveAndFlush(
-          CurrencyRateEntity.builder()
+            createCurrencyRate(base, BigDecimal.valueOf(kvp.getValue()), "FixerIO",
+               Optional.of(Instant.ofEpochSecond(timestamp)), currencyQuoteNameEntity)));
+    });
+  }
+
+  private CurrencyRateEntity createCurrencyRate(String base, BigDecimal rate, String source, Optional<Instant> sourceCreatedOn,
+                                                CurrencyQuoteNameEntity quoteName) {
+      return CurrencyRateEntity.builder()
               .createdOn(Instant.now())
               .base(base)
-              .rate(BigDecimal.valueOf(kvp.getValue()))
-              .quote(currencyQuoteNameEntity)
-              .reverseRate(DEFAULT_AMOUNT.divide(BigDecimal.valueOf(kvp.getValue()), 18, RoundingMode.HALF_DOWN))
-              .source("FixerIO")
-              .sourceCreatedOn(Instant.ofEpochSecond(timestamp)).build()));
-    });
+              .rate(rate)
+              .reverseRate(DEFAULT_AMOUNT.divide(rate, 18, RoundingMode.HALF_DOWN))
+              // TODO: 5/28/21 change source to be enum
+              .source(source)
+              .sourceCreatedOn(sourceCreatedOn.orElse(null))
+              .quote(quoteName).build();
+  }
+
+  private CurrencyQuoteNameEntity createCurrencyQuoteName(String currencyQuoteId, String name, String source) {
+      return CurrencyQuoteNameEntity.builder()
+              .id(currencyQuoteId)
+              .name(name)
+              .source(source).build();
   }
 
   // Method to extract json data from URL

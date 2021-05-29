@@ -40,8 +40,9 @@ public class RatesApiDelegateImpl implements RatesApiDelegate {
      */
     @Override
     public ResponseEntity<String> createRate(CreateCurrencyRateDTO createCurrencyRateDTO) {
-
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+        return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON)
+                .body(currencyRateService.createCurrencyRateAndQuoteName(createCurrencyRateDTO.getQuoteName().getId(),
+                    createCurrencyRateDTO.getQuoteName().getName(), createCurrencyRateDTO.getBase(), createCurrencyRateDTO.getRate()));
     }
 
     /**
@@ -57,7 +58,7 @@ public class RatesApiDelegateImpl implements RatesApiDelegate {
      * PUT /rates/{rateId} : Update currency rate for given Id
      */
     @Override
-    public ResponseEntity<CurrencyRateDTO> updateRate(Long rateId) {
+    public ResponseEntity<CurrencyRateDTO> updateRate(Long rateId, CurrencyRateDTO currencyRateDTO) {
 
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
     }
@@ -66,7 +67,7 @@ public class RatesApiDelegateImpl implements RatesApiDelegate {
      * DELETE /rates/{rateId} : Delete currency rate for given Id
      */
     @Override
-    public ResponseEntity<CurrencyRateDTO> deleteRate(Long rateId) {
+    public ResponseEntity<Void>  deleteRate(Long rateId) {
 
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
     }

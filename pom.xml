@@ -153,7 +153,7 @@
               <output>${project.build.directory}/generated-sources</output>
               <configOptions>
                 <basePackage>bg.dr.chilly.currencyApi</basePackage>
-                <configPackage>bg.dr.chilly.currencyApi.config</configPackage>
+<!--                <configPackage>bg.dr.chilly.currencyApi.config</configPackage>-->
                 <sourceFolder>src/gen/java/main</sourceFolder>
                 <delegatePattern>true</delegatePattern>
               </configOptions>
