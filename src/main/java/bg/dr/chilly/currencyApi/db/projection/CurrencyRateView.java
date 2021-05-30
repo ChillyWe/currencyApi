@@ -9,6 +9,8 @@ public interface CurrencyRateView {
 
     Instant getCreatedOn();
 
+    Instant getUpdatedOn();
+
     String getBase();
 
     CurrencyQuoteNameView getQuote();

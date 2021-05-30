@@ -36,7 +36,7 @@ paths:
         default:
           description: Unexpected error
     post:
-      summary: Create currency rate and quote name
+      summary: Create currency rate with given quoteNameId
       operationId: createRate
       requestBody:
         required: true
@@ -133,6 +133,118 @@ paths:
           description: Not found
         default:
           description: Unexpected error
+  /rates/quote-name:
+    post:
+      summary: Create currency rate quote name
+      operationId: createCurrencyRateQuoteName
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCurrencyQuoteName'
+      responses:
+        201:
+          description: Created
+          content:
+            text/plain:
+              schema:
+                type: string
+        400:
+          description: Bad data
+        default:
+          description: Unexpected error
+  /rates/{rateId}/quote-name:
+    get:
+      summary: Get currency rate quote name for given Id
+      operationId: getCurrencyRateQuoteName
+      parameters:
+        - name: rateId
+          in: path
+          description: rateId
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CurrencyQuoteName'
+        400:
+          description: Bad data
+        404:
+          description: Not found
+        default:
+          description: Unexpected error
+  /rates/{rateId}/quote-name/{quoteNameId}:
+    put:
+      summary: Update currency rate quote name for given Id
+      operationId: updateCurrencyRateQuoteName
+      parameters:
+        - name: rateId
+          in: path
+          description: rateId
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: quoteNameId
+          in: path
+          description: quoteNameId
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCurrencyQuoteName'
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CurrencyRate'
+        204:
+          description: No Content
+        400:
+          description: Bad data
+        404:
+          description: Not found
+        default:
+          description: Unexpected error
+    delete:
+      summary: Delete currency rate quote name for given Id
+      operationId: deleteCurrencyRateQuoteName
+      parameters:
+        - name: rateId
+          in: path
+          description: rateId
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: quoteNameId
+          in: path
+          description: quoteNameId
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Ok
+          content: { }
+        400:
+          description: Bad data
+        404:
+          description: Not found
+        default:
+          description: Unexpected error
 
 components:
   schemas:
@@ -144,16 +256,17 @@ components:
         createdOn:
           type: string
           format: date-time
+        updatedOn:
+          type: string
+          format: date-time
         base:
           type: string
         quoteName:
           $ref: '#/components/schemas/CurrencyQuoteName'
         rate:
           type: number
-          format: currency
         reverseRate:
           type: number
-          format: currency
         source:
           type: string
         sourceCreatedOn:
@@ -161,9 +274,7 @@ components:
           format: date-time
       required:
         - id
-        - createdOn
         - base
-        - quoteName
         - rate
         - reverseRate
     CreateCurrencyRate:
@@ -174,7 +285,6 @@ components:
           $ref: '#/components/schemas/CreateCurrencyQuoteName'
         rate:
           type: number
-          format: currency
       required:
         - base
         - quoteName
@@ -185,12 +295,15 @@ components:
           type: string
         name:
           type: string
-        source:
+        createdOn:
           type: string
+          format: date-time
+        updatedOn:
+          type: string
+          format: date-time
       required:
         - id
         - name
-        - source
     CreateCurrencyQuoteName:
       properties:
         id:

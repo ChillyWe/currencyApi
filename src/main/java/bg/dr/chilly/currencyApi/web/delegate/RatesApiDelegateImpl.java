@@ -2,11 +2,15 @@ package bg.dr.chilly.currencyApi.web.delegate;
 
 
 import bg.dr.chilly.currencyApi.api.RatesApiDelegate;
+import bg.dr.chilly.currencyApi.api.model.CreateCurrencyQuoteNameDTO;
 import bg.dr.chilly.currencyApi.api.model.CreateCurrencyRateDTO;
+import bg.dr.chilly.currencyApi.api.model.CurrencyQuoteNameDTO;
 import bg.dr.chilly.currencyApi.api.model.CurrencyRateDTO;
 import bg.dr.chilly.currencyApi.service.CurrencyRateService;
 import bg.dr.chilly.currencyApi.service.mapper.CurrencyRateMapper;
 import java.util.List;
+import java.util.Optional;
+
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -31,6 +35,7 @@ public class RatesApiDelegateImpl implements RatesApiDelegate {
      */
     @Override
     public ResponseEntity<List<CurrencyRateDTO>> getAllRates() {
+//        currencyRateService.create();
         return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON)
                 .body(currencyRateMapper.currencyRateViewsToDtoList(currencyRateService.getAll()));
     }
@@ -41,8 +46,8 @@ public class RatesApiDelegateImpl implements RatesApiDelegate {
     @Override
     public ResponseEntity<String> createRate(CreateCurrencyRateDTO createCurrencyRateDTO) {
         return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON)
-                .body(currencyRateService.createCurrencyRateAndQuoteName(createCurrencyRateDTO.getQuoteName().getId(),
-                    createCurrencyRateDTO.getQuoteName().getName(), createCurrencyRateDTO.getBase(), createCurrencyRateDTO.getRate()));
+                .body(currencyRateService.createCurrencyRate(createCurrencyRateDTO.getQuoteName().getId(),
+                    createCurrencyRateDTO.getBase(), createCurrencyRateDTO.getRate()));
     }
 
     /**
@@ -50,8 +55,8 @@ public class RatesApiDelegateImpl implements RatesApiDelegate {
      */
     @Override
     public ResponseEntity<CurrencyRateDTO> getRate(Long rateId) {
-
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+        return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON)
+                .body(currencyRateMapper.currencyRateViewToDto(currencyRateService.getCurrencyRateById(rateId)));
     }
 
     /**
@@ -59,8 +64,12 @@ public class RatesApiDelegateImpl implements RatesApiDelegate {
      */
     @Override
     public ResponseEntity<CurrencyRateDTO> updateRate(Long rateId, CurrencyRateDTO currencyRateDTO) {
-
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+        // TODO: 5/30/21 think if it is better to use query params instead of dto
+        return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON)
+                .body(currencyRateMapper.currencyRateEntityToDto(currencyRateService.updateCurrencyRateById(rateId,
+                currencyRateDTO.getBase(), currencyRateDTO.getRate(),
+                currencyRateDTO.getReverseRate() != null ? Optional.of(currencyRateDTO.getReverseRate()): Optional.empty(),
+                currencyRateDTO.getSource(), currencyRateDTO.getSourceCreatedOn())));
     }
 
     /**
@@ -68,7 +77,40 @@ public class RatesApiDelegateImpl implements RatesApiDelegate {
      */
     @Override
     public ResponseEntity<Void>  deleteRate(Long rateId) {
+        currencyRateService.deleteCurrencyRate(rateId);
+        return ResponseEntity.ok().build();
+    }
 
+    /**
+     * POST /rates/quote-name : Create currency rate quote name
+     */
+    @Override
+    public ResponseEntity<String> createCurrencyRateQuoteName(CreateCurrencyQuoteNameDTO createCurrencyQuoteNameDTO) {
+        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+    }
+
+    /**
+     * GET /rates/{rateId}/quote-name : Get currency rate quote name for given Id
+     */
+    @Override
+    public ResponseEntity<CurrencyQuoteNameDTO> getCurrencyRateQuoteName(Long rateId) {
+        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+    }
+
+    /**
+     * PUT /rates/{rateId}/quote-name/{quoteNameId} : Update currency rate quote name for given Id
+     */
+    @Override
+    public ResponseEntity<CurrencyRateDTO> updateCurrencyRateQuoteName(Long rateId, String quoteNameId,
+                                                                    CreateCurrencyQuoteNameDTO createCurrencyQuoteNameDTO) {
+        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+    }
+
+    /**
+     * DELETE /rates/{rateId}/quote-name/{quoteNameId} : Delete currency rate quote name for given Id
+     */
+    @Override
+    public ResponseEntity<Void> deleteCurrencyRateQuoteName(Long rateId, String quoteNameId) {
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
     }
 

@@ -6,6 +6,7 @@ CREATE TABLE currency_rate (
         base varchar(255) NULL,
         currency_quote_name_id varchar(255) NULL,
         created_on timestamp NULL,
+        updated_on timestamp NULL,
         rate float8 NULL,
         reverse_rate float8 NULL,
         source varchar(255) NULL,
@@ -17,7 +18,8 @@ CREATE TABLE currency_rate (
 CREATE TABLE currency_quote_name (
         id varchar(40) NOT NULL,
         name varchar(255) NULL,
-        source varchar(255) NULL,
+        created_on timestamp NULL,
+        updated_on timestamp NULL,
         version int4 NOT NULL,
         CONSTRAINT currency_quote_name_pkey PRIMARY KEY (id)
 );

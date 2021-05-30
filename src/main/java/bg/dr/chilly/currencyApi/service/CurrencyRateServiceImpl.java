@@ -2,6 +2,7 @@ package bg.dr.chilly.currencyApi.service;
 
 import bg.dr.chilly.currencyApi.db.repository.CurrencyQuoteNameRepository;
 import bg.dr.chilly.currencyApi.db.repository.CurrencyRateRepository;
+import bg.dr.chilly.currencyApi.service.mapper.CurrencyRateMapper;
 import bg.dr.chilly.currencyApi.service.model.FixerIOLatestRatesResponse;
 import bg.dr.chilly.currencyApi.service.model.FixerIONamesResponse;
 import bg.dr.chilly.currencyApi.db.model.CurrencyQuoteNameEntity;
@@ -18,6 +19,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Paths;
 import java.time.Instant;
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -70,12 +72,61 @@ public class CurrencyRateServiceImpl implements CurrencyRateService {
 
   @Override
   @Transactional
-  public String createCurrencyRateAndQuoteName(String currencyQuoteId, String currencyQuoteName, String base, BigDecimal rate){
-      CurrencyQuoteNameEntity currencyQuoteNameEntity = createCurrencyQuoteName(currencyQuoteId, currencyQuoteName, "Custom");
-      currencyQuoteNameRepository.saveAndFlush(currencyQuoteNameEntity);
-      CurrencyRateEntity currencyRateEntity = createCurrencyRate(base, rate, "Custom", Optional.of(Instant.now()), currencyQuoteNameEntity);
-      currencyRateRepository.saveAndFlush(currencyRateEntity);
-      return "Currency rate with id : " + currencyRateEntity.getId() + " was created ";
+  public String createCurrencyRate(String currencyQuoteId, String base, BigDecimal rate){
+      Optional<CurrencyQuoteNameEntity> currencyQuoteNameEntityOptional = currencyQuoteNameRepository.findById(currencyQuoteId);
+      if (currencyQuoteNameEntityOptional.isPresent()) {
+          CurrencyRateEntity currencyRateEntity = createCurrencyRate(base, rate, "Custom", Optional.of(Instant.now()), currencyQuoteNameEntityOptional.get());
+          currencyRateRepository.saveAndFlush(currencyRateEntity);
+          return "Currency rate with id : " + currencyRateEntity.getId() + " was created ";
+      }
+      log.error("Currency quote with id: " + currencyQuoteId + " not found");
+      throw new IllegalArgumentException("Currency quote not found");
+      }
+
+  @Override
+  @Transactional(readOnly = true)
+  public CurrencyRateView getCurrencyRateById(Long id) {
+      Optional<CurrencyRateView> currencyRateEntityOptional = currencyRateRepository.findByViewId(id);
+      if (currencyRateEntityOptional.isPresent()) {
+          return currencyRateEntityOptional.get();
+      }
+      // TODO: 5/29/21 handle exception better
+      log.error("Currency rate with id: " + id + " not found");
+      throw new IllegalArgumentException("Currency rate not found");
+  }
+
+  @Override
+  @Transactional
+  public CurrencyRateEntity updateCurrencyRateById(Long currencyRateId, String base, BigDecimal rate,
+                                                   Optional<BigDecimal> reverseRate, String source, OffsetDateTime sourceCreatedOn) {
+      Optional<CurrencyRateEntity> currencyRateEntityOptional = currencyRateRepository.findById(currencyRateId);
+      if (currencyRateEntityOptional.isPresent()) {
+          CurrencyRateEntity entity = currencyRateEntityOptional.get();
+          entity.setUpdatedOn(Instant.now());
+          entity.setBase(base);
+          entity.setRate(rate);
+          entity.setReverseRate(reverseRate.orElse(DEFAULT_AMOUNT.divide(rate, 18, RoundingMode.HALF_DOWN)));
+          entity.setSource(source);
+          entity.setSourceCreatedOn(sourceCreatedOn.toInstant());
+          return entity;
+      }
+      // TODO: 5/30/21 handle exception better
+      log.error("Currency rate with id: " + currencyRateId + " not found");
+      throw new IllegalArgumentException("Currency rate not found");
+  }
+
+  @Override
+  @Transactional
+  public void deleteCurrencyRate(Long id) {
+      Optional<CurrencyRateEntity> currencyRateEntityOptional = currencyRateRepository.findById(id);
+      if (currencyRateEntityOptional.isPresent()) {
+          CurrencyRateEntity entity = currencyRateEntityOptional.get();
+          currencyRateRepository.delete(entity);
+      } else {
+          // TODO: 5/30/21 handle exception better
+          log.error("Currency rate with id: " + id + " not found");
+          throw new IllegalArgumentException("Currency rate not found");
+      }
   }
 
   private void getFixerIoResponse(String urlString) {
@@ -128,7 +179,7 @@ public class CurrencyRateServiceImpl implements CurrencyRateService {
           if (fixerIONamesResponse.getSuccess()) {
               Map<String, String> quoteNames = fixerIONamesResponse.getSymbols();
               quoteNames.forEach((key, value) -> currencyQuoteNameRepository
-                      .saveAndFlush(CurrencyQuoteNameEntity.builder().id(key).name(value).source("FixerIO").build()));
+                      .saveAndFlush(createCurrencyQuoteName(key, value)));
           }
       } catch (IOException e) {
           log.error("Error when read help/currencyQuoteTranslation.json");
@@ -154,6 +205,7 @@ public class CurrencyRateServiceImpl implements CurrencyRateService {
                                                 CurrencyQuoteNameEntity quoteName) {
       return CurrencyRateEntity.builder()
               .createdOn(Instant.now())
+              .updatedOn(Instant.now())
               .base(base)
               .rate(rate)
               .reverseRate(DEFAULT_AMOUNT.divide(rate, 18, RoundingMode.HALF_DOWN))
@@ -163,11 +215,12 @@ public class CurrencyRateServiceImpl implements CurrencyRateService {
               .quote(quoteName).build();
   }
 
-  private CurrencyQuoteNameEntity createCurrencyQuoteName(String currencyQuoteId, String name, String source) {
+  private CurrencyQuoteNameEntity createCurrencyQuoteName(String currencyQuoteId, String name) {
       return CurrencyQuoteNameEntity.builder()
               .id(currencyQuoteId)
-              .name(name)
-              .source(source).build();
+              .createdOn(Instant.now())
+              .updatedOn(Instant.now())
+              .name(name).build();
   }
 
   // Method to extract json data from URL
