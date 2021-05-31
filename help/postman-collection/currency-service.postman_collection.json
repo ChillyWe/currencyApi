@@ -26,6 +26,27 @@
 			"response": []
 		},
 		{
+			"name": "get - export all",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/currency/rates/export",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"currency",
+						"rates",
+						"export"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "post - create currency rate",
 			"request": {
 				"method": "POST",

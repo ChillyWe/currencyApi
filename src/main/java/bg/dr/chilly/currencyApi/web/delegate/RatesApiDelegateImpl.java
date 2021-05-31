@@ -8,18 +8,27 @@ import bg.dr.chilly.currencyApi.api.model.CurrencyQuoteNameDTO;
 import bg.dr.chilly.currencyApi.api.model.CurrencyRateDTO;
 import bg.dr.chilly.currencyApi.service.CurrencyRateService;
 import bg.dr.chilly.currencyApi.service.mapper.CurrencyRateMapper;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
+import bg.dr.chilly.currencyApi.util.CurrencyRateExcelReportWriter;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -38,6 +47,22 @@ public class RatesApiDelegateImpl implements RatesApiDelegate {
 //        currencyRateService.create();
         return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON)
                 .body(currencyRateMapper.currencyRateViewsToDtoList(currencyRateService.getAll()));
+    }
+
+    /**
+     * GET /rates/export : Export all currency rates in xlsx file
+     */
+    public ResponseEntity<Resource> exportCurrencyRates() {
+        try {
+            HttpHeaders headers = new HttpHeaders();
+            headers.add("Content-Disposition", "attachment; filename=currencyRateExport.xlsx");
+
+            ByteArrayInputStream in = CurrencyRateExcelReportWriter.writeExcelReport(currencyRateService.getAll());
+            return ResponseEntity.ok().headers(headers).body(new InputStreamResource(in));
+        } catch (IOException e) {
+            log.error("xlsx export fail ! ", e);
+            throw new RuntimeException("xlsx export fail ! ", e);
+        }
     }
 
     /**

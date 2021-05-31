@@ -55,6 +55,24 @@ paths:
           description: Bad data
         default:
           description: Unexpected error
+  /rates/export:
+    get:
+      summary: Export all currency rates in xlsx file
+      operationId: exportCurrencyRates
+      responses:
+        200:
+          description: OK
+          content:
+            application/vnd.ms-excel:
+              schema:
+                type: string
+                format: binary
+        400:
+          description: Bad data
+        404:
+          description: Not found
+        default:
+          description: Unexpected error
   /rates/{rateId}:
     get:
       summary: Get currency rate for given Id

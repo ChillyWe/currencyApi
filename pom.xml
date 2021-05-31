@@ -25,6 +25,7 @@
     <openApi.version>1.5.9</openApi.version>
     <spring.fox.version>2.9.2</spring.fox.version>
     <mapstruct.version>1.4.2.Final</mapstruct.version>
+    <apache.poi.version>5.0.0</apache.poi.version>
     <openapi.generator.maven.plugin>5.1.0</openapi.generator.maven.plugin>
   </properties>
 
@@ -103,6 +104,17 @@
       <groupId>org.mapstruct</groupId>
       <artifactId>mapstruct-processor</artifactId>
       <version>${mapstruct.version}</version>
+    </dependency>
+    <!--      Apache POI -->
+    <dependency>
+      <groupId>org.apache.poi</groupId>
+      <artifactId>poi</artifactId>
+      <version>${apache.poi.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.poi</groupId>
+      <artifactId>poi-ooxml</artifactId>
+      <version>${apache.poi.version}</version>
     </dependency>
 
     <dependency>
