@@ -47,6 +47,27 @@
 			"response": []
 		},
 		{
+			"name": "post - update from fixer",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/currency/rates/update-fixer",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"currency",
+						"rates",
+						"update-fixer"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "post - create currency rate",
 			"request": {
 				"method": "POST",
@@ -76,7 +97,7 @@
 			"response": []
 		},
 		{
-			"name": "get - get one by id",
+			"name": "get - rate by id",
 			"request": {
 				"method": "GET",
 				"header": [],
