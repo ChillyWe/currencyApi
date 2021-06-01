@@ -22,8 +22,6 @@ public interface CurrencyRateMapper {
 
   CurrencyQuoteNameDTO currencyQuoteNameViewToDto(CurrencyQuoteNameView source);
 
-  List<CurrencyQuoteNameDTO> currencyQuoteNameViewsToDtoList(List<CurrencyQuoteNameView> sources);
-
   @Mapping(source = "source.quote", target = "quoteName")
   CurrencyRateDTO currencyRateEntityToDto(CurrencyRateEntity source);
 

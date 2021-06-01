@@ -85,6 +85,16 @@ public class RatesApiDelegateImpl implements RatesApiDelegate {
     }
 
     /**
+    * POST /rates/update-fixer : Get latest update from fixer.io api
+    */
+    @Override
+    public ResponseEntity<String> updateCurrencyRates() {
+        currencyRateService.updateCurrencyRatesFromFixerIO();
+        return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON)
+                .body("Currency rates are updated Successfully !");
+    }
+
+    /**
      * PUT /rates/{rateId} : Update currency rate for given Id
      */
     @Override

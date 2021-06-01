@@ -2,21 +2,16 @@ package bg.dr.chilly.currencyApi.service;
 
 import bg.dr.chilly.currencyApi.db.repository.CurrencyQuoteNameRepository;
 import bg.dr.chilly.currencyApi.db.repository.CurrencyRateRepository;
-import bg.dr.chilly.currencyApi.service.mapper.CurrencyRateMapper;
 import bg.dr.chilly.currencyApi.service.model.FixerIOLatestRatesResponse;
 import bg.dr.chilly.currencyApi.service.model.FixerIONamesResponse;
 import bg.dr.chilly.currencyApi.db.model.CurrencyQuoteNameEntity;
 import bg.dr.chilly.currencyApi.db.model.CurrencyRateEntity;
 import bg.dr.chilly.currencyApi.db.projection.CurrencyRateView;
-import bg.dr.chilly.currencyApi.util.URLReader;
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
+import bg.dr.chilly.currencyApi.util.Constants;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.nio.file.Paths;
 import java.time.Instant;
 import java.time.OffsetDateTime;
@@ -29,8 +24,13 @@ import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
+
+import static bg.dr.chilly.currencyApi.util.Constants.*;
 
 @Slf4j
 @Service
@@ -38,30 +38,28 @@ import org.springframework.transaction.annotation.Transactional;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class CurrencyRateServiceImpl implements CurrencyRateService {
 
-  private static final BigDecimal DEFAULT_AMOUNT = BigDecimal.ONE;
-
   @Autowired
   ObjectMapper objectMapper;
   @Autowired
-  URLReader urlReader;
-  @Autowired
-  CurrencyQuoteNameRepository currencyQuoteNameRepository;
+  RestTemplate restTemplate;
   @Autowired
   CurrencyRateRepository currencyRateRepository;
+  @Autowired
+  CurrencyQuoteNameRepository currencyQuoteNameRepository;
 
-  // helper method to create currencies and quote names from json files
   @Override
-  public void create() {
-    createBaseCurrencyQuoteNames();
-//    getFixerIoResponse(String.format("http://data.fixer.io/api/symbols?access_key=%s", Constants.KEY_FOR_FIXER));
-    try {
-        FixerIOLatestRatesResponse fixerResponse = objectMapper
-            .readValue(Paths.get("help/currencyRates_20210521.json").toFile(),
-                FixerIOLatestRatesResponse.class);
-        createEntitiesFromFixerResponse(fixerResponse);
-    } catch (IOException e) {
-        e.printStackTrace();
-    }
+  public void updateCurrencyRatesFromFixerIO() {
+//    createBaseCurrencyQuoteNames();
+      FixerIOLatestRatesResponse fixerIoResponse = getFixerIoResponse(String.format(
+              "http://data.fixer.io/api/latest?access_key=%s", Constants.KEY_FOR_FIXER));
+      createEntitiesFromFixerResponse(fixerIoResponse);
+//    try {
+//        FixerIOLatestRatesResponse fixerResponse = objectMapper
+//            .readValue(Paths.get("help/currencyRates_20210521.json").toFile(), FixerIOLatestRatesResponse.class);
+//        createEntitiesFromFixerResponse(fixerResponse);
+//    } catch (IOException e) {
+//        e.printStackTrace();
+//    }
   }
 
   @Override
@@ -79,6 +77,7 @@ public class CurrencyRateServiceImpl implements CurrencyRateService {
           currencyRateRepository.saveAndFlush(currencyRateEntity);
           return "Currency rate with id : " + currencyRateEntity.getId() + " was created ";
       }
+      // TODO: 6/1/21 custom exception
       log.error("Currency quote with id: " + currencyQuoteId + " not found");
       throw new IllegalArgumentException("Currency quote not found");
       }
@@ -129,46 +128,16 @@ public class CurrencyRateServiceImpl implements CurrencyRateService {
       }
   }
 
-  private void getFixerIoResponse(String urlString) {
-    URL url;
-    try {
-      url = new URL(urlString);
-      FixerIOLatestRatesResponse fixerResponse = objectMapper
-          .readValue(url, FixerIOLatestRatesResponse.class);
-      createEntitiesFromFixerResponse(fixerResponse);
-    } catch (MalformedURLException e) {
-      // TODO: 5/25/21 handle with custom error
-      e.printStackTrace();
-    } catch (JsonMappingException e) {
-      // TODO: 5/25/21 handle with custom error
-      e.printStackTrace();
-    } catch (JsonParseException e) {
-      // TODO: 5/25/21 handle with custom error
-      e.printStackTrace();
-    } catch (IOException e) {
-      // TODO: 5/25/21 handle with custom error
-      e.printStackTrace();
-    }
-
-
+  private FixerIOLatestRatesResponse getFixerIoResponse(String urlString) {
+      ResponseEntity<FixerIOLatestRatesResponse> fixerIOLatestRatesResponseResponse =
+              restTemplate.getForEntity(urlString, FixerIOLatestRatesResponse.class);
+      if (HttpStatus.OK.equals(fixerIOLatestRatesResponseResponse.getStatusCode())) {
+          return fixerIOLatestRatesResponseResponse.getBody();
+      }
+      // TODO: 6/1/21 custom exception
+      log.error("Can not get Fixer IO response");
+      throw new RuntimeException("Can not get Fixer IO response");
   }
-
-//  public static void main(String[] args) throws IOException {
-//    ObjectMapper mapper = new ObjectMapper();
-//    FixerIONamesResponse namesResponse = mapper
-//        .readValue(Paths.get("help/currencyQuoteTranslation.json").toFile(), FixerIONamesResponse.class);
-//
-//    if (namesResponse.getSuccess()) {
-//      Map<String, String> quoteNames = namesResponse.getSymbols();
-//      List<CurrencyQuoteNameEntity> names = quoteNames.entrySet().stream().map(kvp -> {
-//        return CurrencyQuoteNameEntity.builder().id(kvp.getKey()).name(kvp.getValue())
-//            .source("FixerIo").build();
-//      }).collect(Collectors.toList());
-//      String debug = "";
-//    } else {
-//      throw new RuntimeException("invalit fail");
-//    }
-//  }
 
   @Transactional
   public void createBaseCurrencyQuoteNames() {
@@ -182,6 +151,7 @@ public class CurrencyRateServiceImpl implements CurrencyRateService {
                       .saveAndFlush(createCurrencyQuoteName(key, value)));
           }
       } catch (IOException e) {
+          // TODO: 6/1/21 custom exception
           log.error("Error when read help/currencyQuoteTranslation.json");
           e.printStackTrace();
       }
@@ -222,39 +192,5 @@ public class CurrencyRateServiceImpl implements CurrencyRateService {
               .updatedOn(Instant.now())
               .name(name).build();
   }
-
-  // Method to extract json data from URL
-//  private JsonNode readJSONfromURI(String uriString) {
-//    JsonNode result = null;
-//    String jsonStringResult = Constants.EMPTY_STRING;
-//
-//    try {
-//      URL url = new URL(uriString);
-//      HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-//      conn.setRequestMethod(Constants.HTTP_GET_METHOD);
-//      conn.connect();
-//      int responseCode = conn.getResponseCode();
-//
-//      if (responseCode != 200) {
-//        // TODO: 5/24/21 throw custom Exception
-//        throw new FixerException(Constants.FIXER_EXCEPTION_MESSAGE + responseCode);
-//      } else {
-//        jsonStringResult = urlReader.read(url);
-//      }
-//      conn.disconnect();
-//      result = objectMapper.readTree(jsonStringResult);
-//    } catch (MalformedURLException me) {
-//      // TODO: 5/22/21 handle exception
-//      log.info(me.getMessage());
-//    } catch (IOException ioe) {
-//      // TODO: 5/22/21 handle exception
-//      log.info(ioe.getMessage());
-//    } catch (FixerException fe) {
-//      // TODO: 5/22/21 handle exception
-//      log.info(fe.getMessage());
-//    }
-//
-//    return result;
-//  }
 
 }

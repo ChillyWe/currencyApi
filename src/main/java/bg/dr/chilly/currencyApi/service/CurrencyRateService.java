@@ -10,7 +10,7 @@ import java.util.Optional;
 
 public interface CurrencyRateService {
 
-  void create();
+  void updateCurrencyRatesFromFixerIO();
 
   List<CurrencyRateView> getAll();
 
@@ -21,6 +21,6 @@ public interface CurrencyRateService {
   CurrencyRateEntity updateCurrencyRateById(Long currencyRateId, String base, BigDecimal rate, Optional<BigDecimal> reverseRate,
                                         String source, OffsetDateTime sourceCreatedOn);
 
-    void deleteCurrencyRate(Long id);
+  void deleteCurrencyRate(Long id);
 
 }

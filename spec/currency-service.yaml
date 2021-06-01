@@ -73,6 +73,19 @@ paths:
           description: Not found
         default:
           description: Unexpected error
+  /rates/update-fixer:
+    post:
+      summary: Get latest update from fixer.io api
+      operationId: updateCurrencyRates
+      responses:
+        200:
+          description: OK
+          content:
+            text/plain:
+              schema:
+                type: string
+        default:
+          description: Unexpected error
   /rates/{rateId}:
     get:
       summary: Get currency rate for given Id
