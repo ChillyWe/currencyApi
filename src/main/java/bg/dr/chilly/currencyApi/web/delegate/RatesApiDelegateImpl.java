@@ -125,6 +125,16 @@ public class RatesApiDelegateImpl implements RatesApiDelegate {
     }
 
     /**
+     * POST /rates/quote-name/update-fixer : Update currency quote names from fixer.io
+     */
+    @Override
+    public ResponseEntity<String> updateCurrencyQuoteName() {
+        currencyRateService.updateCurrencyQuoteNamesFromFixerIO();
+        return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON)
+                .body("Currency quote names are updated Successfully !");
+    }
+
+    /**
      * GET /rates/{rateId}/quote-name : Get currency rate quote name for given Id
      */
     @Override

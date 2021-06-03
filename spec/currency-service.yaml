@@ -185,6 +185,21 @@ paths:
           description: Bad data
         default:
           description: Unexpected error
+  /rates/quote-name/update-fixer:
+    post:
+      summary: Update currency quote names from fixer.io
+      operationId: updateCurrencyQuoteName
+      responses:
+        200:
+          description: Created
+          content:
+            text/plain:
+              schema:
+                type: string
+        400:
+          description: Bad data
+        default:
+          description: Unexpected error
   /rates/{rateId}/quote-name:
     get:
       summary: Get currency rate quote name for given Id

@@ -9,10 +9,9 @@ import bg.dr.chilly.currencyApi.db.model.CurrencyRateEntity;
 import bg.dr.chilly.currencyApi.db.projection.CurrencyRateView;
 import bg.dr.chilly.currencyApi.util.Constants;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.io.IOException;
+
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.nio.file.Paths;
 import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.util.List;
@@ -38,6 +37,11 @@ import static bg.dr.chilly.currencyApi.util.Constants.*;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class CurrencyRateServiceImpl implements CurrencyRateService {
 
+  public static final String FIXER_IO_BASE_URL = "http://data.fixer.io/api";
+  public static final String FIXER_IO_LATEST_PREFIX = "/latest";
+  public static final String FIXER_IO_SYMBOLS_PREFIX = "/symbols";
+  public static final String ACCESS_KEY_STRING_FORMAT = "?access_key=%s";
+
   @Autowired
   ObjectMapper objectMapper;
   @Autowired
@@ -49,9 +53,9 @@ public class CurrencyRateServiceImpl implements CurrencyRateService {
 
   @Override
   public void updateCurrencyRatesFromFixerIO() {
-//    createBaseCurrencyQuoteNames();
-      FixerIOLatestRatesResponse fixerIoResponse = getFixerIoResponse(String.format(
-              "http://data.fixer.io/api/latest?access_key=%s", Constants.KEY_FOR_FIXER));
+//    createCurrencyQuoteNamesFromFixerResponse();
+      FixerIOLatestRatesResponse fixerIoResponse = getFixerIOLatestResponse(
+              FIXER_IO_BASE_URL + FIXER_IO_LATEST_PREFIX + String.format(ACCESS_KEY_STRING_FORMAT, Constants.KEY_FOR_FIXER));
       createEntitiesFromFixerResponse(fixerIoResponse);
 //    try {
 //        FixerIOLatestRatesResponse fixerResponse = objectMapper
@@ -60,6 +64,13 @@ public class CurrencyRateServiceImpl implements CurrencyRateService {
 //    } catch (IOException e) {
 //        e.printStackTrace();
 //    }
+  }
+
+  @Override
+  public void updateCurrencyQuoteNamesFromFixerIO() {
+      FixerIONamesResponse fixerIONamesResponse = getFixerIONamesResponse(
+              FIXER_IO_BASE_URL + FIXER_IO_SYMBOLS_PREFIX + String.format(ACCESS_KEY_STRING_FORMAT, KEY_FOR_FIXER));
+      createCurrencyQuoteNamesFromFixerResponse(fixerIONamesResponse);
   }
 
   @Override
@@ -128,7 +139,7 @@ public class CurrencyRateServiceImpl implements CurrencyRateService {
       }
   }
 
-  private FixerIOLatestRatesResponse getFixerIoResponse(String urlString) {
+  private FixerIOLatestRatesResponse getFixerIOLatestResponse(String urlString) {
       ResponseEntity<FixerIOLatestRatesResponse> fixerIOLatestRatesResponseResponse =
               restTemplate.getForEntity(urlString, FixerIOLatestRatesResponse.class);
       if (HttpStatus.OK.equals(fixerIOLatestRatesResponseResponse.getStatusCode())) {
@@ -139,36 +150,53 @@ public class CurrencyRateServiceImpl implements CurrencyRateService {
       throw new RuntimeException("Can not get Fixer IO response");
   }
 
+    private FixerIONamesResponse getFixerIONamesResponse(String urlString) {
+        ResponseEntity<FixerIONamesResponse> fixerIOQuoteNamesResponseResponse =
+                restTemplate.getForEntity(urlString, FixerIONamesResponse.class);
+        if (HttpStatus.OK.equals(fixerIOQuoteNamesResponseResponse.getStatusCode())) {
+            return fixerIOQuoteNamesResponseResponse.getBody();
+        }
+        // TODO: 6/1/21 custom exception
+        log.error("Can not get Fixer IO response");
+        throw new RuntimeException("Can not get Fixer IO response");
+    }
+
   @Transactional
-  public void createBaseCurrencyQuoteNames() {
-      try {
-          FixerIONamesResponse fixerIONamesResponse = objectMapper
-              .readValue(Paths.get("help/currencyQuoteTranslation.json").toFile(),
-                  FixerIONamesResponse.class);
+  public void createCurrencyQuoteNamesFromFixerResponse(FixerIONamesResponse fixerIONamesResponse) {
+//      try {
+//          FixerIONamesResponse fixerIONamesResponse = objectMapper
+//              .readValue(Paths.get("help/currencyQuoteTranslation.json").toFile(),
+//                  FixerIONamesResponse.class);
           if (fixerIONamesResponse.getSuccess()) {
               Map<String, String> quoteNames = fixerIONamesResponse.getSymbols();
-              quoteNames.forEach((key, value) -> currencyQuoteNameRepository
-                      .saveAndFlush(createCurrencyQuoteName(key, value)));
+              quoteNames.forEach((key, value) -> {
+                  Optional<CurrencyQuoteNameEntity> entityOptional = currencyQuoteNameRepository.findById(key);
+                  if (entityOptional.isEmpty()) {
+                    currencyQuoteNameRepository.saveAndFlush(createCurrencyQuoteName(key, value));
+                  }
+              });
           }
-      } catch (IOException e) {
-          // TODO: 6/1/21 custom exception
-          log.error("Error when read help/currencyQuoteTranslation.json");
-          e.printStackTrace();
-      }
+//      } catch (IOException e) {
+//          // TODO: 6/1/21 custom exception
+//          log.error("Error when read help/currencyQuoteTranslation.json");
+//          e.printStackTrace();
+//      }
   }
 
   @Transactional
   public void createEntitiesFromFixerResponse(FixerIOLatestRatesResponse fixerResponse) {
-    Long timestamp = fixerResponse.getTimestamp();
-    String base = fixerResponse.getBase();
+    if(fixerResponse.getSuccess()) {
+        Long timestamp = fixerResponse.getTimestamp();
+        String base = fixerResponse.getBase();
 
-    fixerResponse.getRates().entrySet().forEach(kvp -> {
-      Optional<CurrencyQuoteNameEntity> quoteNameOptional = currencyQuoteNameRepository
-          .findById(kvp.getKey());
-      quoteNameOptional.ifPresent(currencyQuoteNameEntity -> currencyRateRepository.saveAndFlush(
-            createCurrencyRate(base, BigDecimal.valueOf(kvp.getValue()), "FixerIO",
-               Optional.of(Instant.ofEpochSecond(timestamp)), currencyQuoteNameEntity)));
-    });
+        fixerResponse.getRates().entrySet().forEach(kvp -> {
+            Optional<CurrencyQuoteNameEntity> quoteNameOptional = currencyQuoteNameRepository
+                    .findById(kvp.getKey());
+            quoteNameOptional.ifPresent(currencyQuoteNameEntity -> currencyRateRepository.saveAndFlush(
+                    createCurrencyRate(base, BigDecimal.valueOf(kvp.getValue()), "FixerIO",
+                            Optional.of(Instant.ofEpochSecond(timestamp)), currencyQuoteNameEntity)));
+        });
+    }
   }
 
   private CurrencyRateEntity createCurrencyRate(String base, BigDecimal rate, String source, Optional<Instant> sourceCreatedOn,

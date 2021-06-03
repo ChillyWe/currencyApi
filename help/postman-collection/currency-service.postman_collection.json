@@ -167,6 +167,28 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "post - update quote name from fixer",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/currency/rates/quote-name/update-fixer",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"currency",
+						"rates",
+						"quote-name",
+						"update-fixer"
+					]
+				}
+			},
+			"response": []
 		}
 	]
 }

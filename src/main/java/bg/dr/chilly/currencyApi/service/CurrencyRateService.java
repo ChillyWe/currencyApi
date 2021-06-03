@@ -12,6 +12,8 @@ public interface CurrencyRateService {
 
   void updateCurrencyRatesFromFixerIO();
 
+  void updateCurrencyQuoteNamesFromFixerIO();
+
   List<CurrencyRateView> getAll();
 
   String createCurrencyRate(String currencyQuoteId, String base, BigDecimal rate);
