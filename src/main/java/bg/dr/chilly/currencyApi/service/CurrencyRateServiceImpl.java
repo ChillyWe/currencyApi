@@ -19,10 +19,10 @@ import java.util.Map;
 import java.util.Optional;
 
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -33,7 +33,6 @@ import static bg.dr.chilly.currencyApi.util.Constants.*;
 
 @Slf4j
 @Service
-@AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class CurrencyRateServiceImpl implements CurrencyRateService {
 
@@ -50,6 +49,9 @@ public class CurrencyRateServiceImpl implements CurrencyRateService {
   CurrencyRateRepository currencyRateRepository;
   @Autowired
   CurrencyQuoteNameRepository currencyQuoteNameRepository;
+
+  @Value("${fixer.base.url}")
+  String fixerBaseUrl;
 
   @Override
   public void updateCurrencyRatesFromFixerIO() {
@@ -69,7 +71,7 @@ public class CurrencyRateServiceImpl implements CurrencyRateService {
   @Override
   public void updateCurrencyQuoteNamesFromFixerIO() {
       FixerIONamesResponse fixerIONamesResponse = getFixerIONamesResponse(
-              FIXER_IO_BASE_URL + FIXER_IO_SYMBOLS_PREFIX + String.format(ACCESS_KEY_STRING_FORMAT, KEY_FOR_FIXER));
+              fixerBaseUrl + FIXER_IO_SYMBOLS_PREFIX + String.format(ACCESS_KEY_STRING_FORMAT, KEY_FOR_FIXER));
       createCurrencyQuoteNamesFromFixerResponse(fixerIONamesResponse);
   }
 

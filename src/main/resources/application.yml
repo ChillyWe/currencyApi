@@ -25,6 +25,10 @@ spring:
     password: 1919
     url: jdbc:mysql://localhost:3306/currencies_db
 
+fixer:
+  base:
+    url: http://data.fixer.io/api
+
 logging:
   level:
     org: INFO
