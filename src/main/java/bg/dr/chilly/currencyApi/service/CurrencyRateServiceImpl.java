@@ -7,8 +7,6 @@ import bg.dr.chilly.currencyApi.service.model.FixerIONamesResponse;
 import bg.dr.chilly.currencyApi.db.model.CurrencyQuoteNameEntity;
 import bg.dr.chilly.currencyApi.db.model.CurrencyRateEntity;
 import bg.dr.chilly.currencyApi.db.projection.CurrencyRateView;
-import bg.dr.chilly.currencyApi.util.Constants;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -36,13 +34,6 @@ import static bg.dr.chilly.currencyApi.util.Constants.*;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class CurrencyRateServiceImpl implements CurrencyRateService {
 
-  public static final String FIXER_IO_BASE_URL = "http://data.fixer.io/api";
-  public static final String FIXER_IO_LATEST_PREFIX = "/latest";
-  public static final String FIXER_IO_SYMBOLS_PREFIX = "/symbols";
-  public static final String ACCESS_KEY_STRING_FORMAT = "?access_key=%s";
-
-  @Autowired
-  ObjectMapper objectMapper;
   @Autowired
   RestTemplate restTemplate;
   @Autowired
@@ -52,12 +43,13 @@ public class CurrencyRateServiceImpl implements CurrencyRateService {
 
   @Value("${fixer.base.url}")
   String fixerBaseUrl;
+  @Value("${fixer.api.key}")
+  String fixerApiKey;
 
   @Override
   public void updateCurrencyRatesFromFixerIO() {
-//    createCurrencyQuoteNamesFromFixerResponse();
       FixerIOLatestRatesResponse fixerIoResponse = getFixerIOLatestResponse(
-              FIXER_IO_BASE_URL + FIXER_IO_LATEST_PREFIX + String.format(ACCESS_KEY_STRING_FORMAT, Constants.KEY_FOR_FIXER));
+              fixerBaseUrl + FIXER_IO_LATEST_PREFIX + String.format(ACCESS_KEY_STRING_FORMAT, fixerApiKey));
       createEntitiesFromFixerResponse(fixerIoResponse);
 //    try {
 //        FixerIOLatestRatesResponse fixerResponse = objectMapper
@@ -71,7 +63,7 @@ public class CurrencyRateServiceImpl implements CurrencyRateService {
   @Override
   public void updateCurrencyQuoteNamesFromFixerIO() {
       FixerIONamesResponse fixerIONamesResponse = getFixerIONamesResponse(
-              fixerBaseUrl + FIXER_IO_SYMBOLS_PREFIX + String.format(ACCESS_KEY_STRING_FORMAT, KEY_FOR_FIXER));
+              fixerBaseUrl + FIXER_IO_SYMBOLS_PREFIX + String.format(ACCESS_KEY_STRING_FORMAT, fixerApiKey));
       createCurrencyQuoteNamesFromFixerResponse(fixerIONamesResponse);
   }
 

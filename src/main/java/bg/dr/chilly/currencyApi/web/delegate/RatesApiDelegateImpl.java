@@ -44,7 +44,6 @@ public class RatesApiDelegateImpl implements RatesApiDelegate {
      */
     @Override
     public ResponseEntity<List<CurrencyRateDTO>> getAllRates() {
-//        currencyRateService.create();
         return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON)
                 .body(currencyRateMapper.currencyRateViewsToDtoList(currencyRateService.getAll()));
     }

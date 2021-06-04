@@ -28,7 +28,8 @@ spring:
 fixer:
   base:
     url: http://data.fixer.io/api
-
+  api:
+    key: 1044dc5ed8f8b4d8fa259794bbb38fcc
 logging:
   level:
     org: INFO

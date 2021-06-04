@@ -7,8 +7,9 @@ public class Constants {
 	private Constants() { }
 	
 	// Constants ----------------------------------
-	public static final String KEY_FOR_FIXER = "1044dc5ed8f8b4d8fa259794bbb38fcc";
 	public static final BigDecimal DEFAULT_AMOUNT = BigDecimal.ONE;
-	public static final String EUR_STRING_VALUE = "EUR";
+	public static final String FIXER_IO_LATEST_PREFIX = "/latest";
+	public static final String FIXER_IO_SYMBOLS_PREFIX = "/symbols";
+	public static final String ACCESS_KEY_STRING_FORMAT = "?access_key=%s";
 	
 }
