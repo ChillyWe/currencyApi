@@ -7,6 +7,8 @@ import bg.dr.chilly.currencyApi.api.model.CreateCurrencyRateDTO;
 import bg.dr.chilly.currencyApi.api.model.CurrencyQuoteNameDTO;
 import bg.dr.chilly.currencyApi.api.model.CurrencyRateDTO;
 import bg.dr.chilly.currencyApi.service.CurrencyRateService;
+import bg.dr.chilly.currencyApi.service.ECBService;
+import bg.dr.chilly.currencyApi.service.FixerIoService;
 import bg.dr.chilly.currencyApi.service.mapper.CurrencyRateMapper;
 
 import java.io.ByteArrayInputStream;
@@ -34,6 +36,10 @@ import org.springframework.stereotype.Service;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class RatesApiDelegateImpl implements RatesApiDelegate {
 
+    @Autowired
+    ECBService ecbService;
+    @Autowired
+    FixerIoService fixerIoService;
     @Autowired
     final CurrencyRateService currencyRateService;
     @Autowired
@@ -70,7 +76,7 @@ public class RatesApiDelegateImpl implements RatesApiDelegate {
     @Override
     public ResponseEntity<String> createRate(CreateCurrencyRateDTO createCurrencyRateDTO) {
         return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON)
-                .body(currencyRateService.createCurrencyRate(createCurrencyRateDTO.getQuoteName().getId(),
+                .body(currencyRateService.createCustomCurrencyRate(createCurrencyRateDTO.getQuoteName().getId(),
                     createCurrencyRateDTO.getBase(), createCurrencyRateDTO.getRate()));
     }
 
@@ -88,9 +94,18 @@ public class RatesApiDelegateImpl implements RatesApiDelegate {
     */
     @Override
     public ResponseEntity<String> updateCurrencyRates() {
-        currencyRateService.updateCurrencyRatesFromFixerIO();
+        fixerIoService.updateCurrencyRatesFromFixerIO();
         return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON)
                 .body("Currency rates are updated Successfully !");
+    }
+
+    /**
+     * POST /rates/update-ecb : Get latest update from European Central Bank
+     */
+    @Override
+    public ResponseEntity<String> updateCurrencyRatesFromECB() {
+        return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON)
+                .body(ecbService.updateCurrencyRatesFromECB());
     }
 
     /**
@@ -128,7 +143,7 @@ public class RatesApiDelegateImpl implements RatesApiDelegate {
      */
     @Override
     public ResponseEntity<String> updateCurrencyQuoteName() {
-        currencyRateService.updateCurrencyQuoteNamesFromFixerIO();
+        fixerIoService.updateCurrencyQuoteNamesFromFixerIO();
         return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON)
                 .body("Currency quote names are updated Successfully !");
     }

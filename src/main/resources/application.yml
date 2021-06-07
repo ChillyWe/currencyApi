@@ -30,6 +30,11 @@ fixer:
     url: http://data.fixer.io/api
   api:
     key: 1044dc5ed8f8b4d8fa259794bbb38fcc
+
+ecb:
+  base:
+    url: https://www.ecb.europa.eu/stats/eurofxref/eurofxref-daily.xml
+
 logging:
   level:
     org: INFO

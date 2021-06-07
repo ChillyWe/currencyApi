@@ -86,6 +86,19 @@ paths:
                 type: string
         default:
           description: Unexpected error
+  /rates/update-ecb:
+    post:
+      summary: Get latest update from European Central Bank
+      operationId: updateCurrencyRatesFromECB
+      responses:
+        200:
+          description: OK
+          content:
+            text/plain:
+              schema:
+                type: string
+        default:
+          description: Unexpected error
   /rates/{rateId}:
     get:
       summary: Get currency rate for given Id

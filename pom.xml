@@ -83,6 +83,11 @@
       <artifactId>jackson-databind-nullable</artifactId>
       <version>${jackson.databind.version}</version>
     </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.dataformat</groupId>
+      <artifactId>jackson-dataformat-xml</artifactId>
+      <version>${jackson.version}</version>
+    </dependency>
     <!--		Swagger	-->
     <dependency>
       <groupId>io.springfox</groupId>
