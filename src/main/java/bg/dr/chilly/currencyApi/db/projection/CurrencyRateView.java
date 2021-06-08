@@ -5,22 +5,22 @@ import java.time.Instant;
 
 public interface CurrencyRateView {
 
-    Long getId();
+  Long getId();
 
-    Instant getCreatedOn();
+  Instant getCreatedOn();
 
-    Instant getUpdatedOn();
+  Instant getUpdatedOn();
 
-    String getBase();
+  String getBase();
 
-    CurrencyQuoteNameView getQuote();
+  CurrencyQuoteNameView getQuote();
 
-    BigDecimal getRate();
+  BigDecimal getRate();
 
-    BigDecimal getReverseRate();
+  BigDecimal getReverseRate();
 
-    String getSource();
+  String getSource();
 
-    Instant getSourceCreatedOn();
+  Instant getSourceCreatedOn();
 
 }

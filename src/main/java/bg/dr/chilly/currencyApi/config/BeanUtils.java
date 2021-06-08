@@ -13,19 +13,19 @@ import org.springframework.web.client.RestTemplate;
 @EnableAutoConfiguration
 public class BeanUtils {
 
-    @Bean
-    public RestTemplate restTemplate(RestTemplateBuilder builder) {
-        return builder.build();
-    }
+  @Bean
+  public RestTemplate restTemplate(RestTemplateBuilder builder) {
+    return builder.build();
+  }
 
-    @Bean
-    public XmlMapper xmlMapper() {
-        return new XmlMapper();
-    }
+  @Bean
+  public XmlMapper xmlMapper() {
+    return new XmlMapper();
+  }
 
-    @Bean
-    public ObjectMapper objectMapper() {
-        return new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-    }
+  @Bean
+  public ObjectMapper objectMapper() {
+    return new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+  }
 
 }

@@ -49,13 +49,14 @@ public class FixerIoServiceImpl implements FixerIoService {
 //        FixerIOLatestRatesResponse fixerIoResponse = getFixerIOLatestResponse(
 //                fixerBaseUrl + FIXER_IO_LATEST_PREFIX + String.format(ACCESS_KEY_STRING_FORMAT, fixerApiKey));
 //        createEntitiesFromFixerResponse(fixerIoResponse);
-    try {
-        FixerIOLatestRatesResponse fixerResponse = objectMapper
-            .readValue(Paths.get("help/currencyRates_20210607.json").toFile(), FixerIOLatestRatesResponse.class);
-        createEntitiesFromFixerResponse(fixerResponse);
-    } catch (IOException e) {
-        e.printStackTrace();
-    }
+        try {
+            FixerIOLatestRatesResponse fixerResponse = objectMapper
+                .readValue(Paths.get("help/currencyRates_20210607.json").toFile(),
+                    FixerIOLatestRatesResponse.class);
+            createEntitiesFromFixerResponse(fixerResponse);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void createEntitiesFromFixerResponse(FixerIOLatestRatesResponse fixerResponse) {
@@ -83,9 +84,11 @@ public class FixerIoServiceImpl implements FixerIoService {
             // TODO: 6/7/21 create List and save all
             Map<String, String> quoteNames = fixerIONamesResponse.getSymbols();
             quoteNames.forEach((key, value) -> {
-                Optional<CurrencyQuoteNameEntity> entityOptional = currencyRateService.findCurrencyQuoteNameEntity(key);
+                Optional<CurrencyQuoteNameEntity> entityOptional =
+                    currencyRateService.findCurrencyQuoteNameEntity(key);
                 if (entityOptional.isEmpty()) {
-                    currencyRateService.saveCurrencyQuoteNameEntity(currencyRateService.createCurrencyQuoteName(key, value));
+                    currencyRateService.saveCurrencyQuoteNameEntity(
+                        currencyRateService.createCurrencyQuoteName(key, value));
                 }
             });
         }
@@ -99,14 +102,15 @@ public class FixerIoServiceImpl implements FixerIoService {
     @Override
     public void updateCurrencyQuoteNamesFromFixerIO() {
         FixerIONamesResponse fixerIONamesResponse = getFixerIONamesResponse(
-                fixerBaseUrl + FIXER_IO_SYMBOLS_PREFIX + String.format(ACCESS_KEY_STRING_FORMAT, fixerApiKey));
+            fixerBaseUrl + FIXER_IO_SYMBOLS_PREFIX +
+                String.format(ACCESS_KEY_STRING_FORMAT, fixerApiKey));
         createCurrencyQuoteNamesFromFixerResponse(fixerIONamesResponse);
     }
 
     @SneakyThrows
     private FixerIOLatestRatesResponse getFixerIOLatestResponse(String urlString) {
         ResponseEntity<String> fixerIOLatestRatesStringResponse =
-                restTemplate.getForEntity(urlString, String.class);
+            restTemplate.getForEntity(urlString, String.class);
 
         if (HttpStatus.OK.equals(fixerIOLatestRatesStringResponse.getStatusCode())) {
 //            String body = fixerIOLatestRatesStringResponse.getBody();
@@ -121,7 +125,7 @@ public class FixerIoServiceImpl implements FixerIoService {
 
     private FixerIONamesResponse getFixerIONamesResponse(String urlString) {
         ResponseEntity<FixerIONamesResponse> fixerIOQuoteNamesResponseResponse =
-                restTemplate.getForEntity(urlString, FixerIONamesResponse.class);
+            restTemplate.getForEntity(urlString, FixerIONamesResponse.class);
         if (HttpStatus.OK.equals(fixerIOQuoteNamesResponseResponse.getStatusCode())) {
             return fixerIOQuoteNamesResponseResponse.getBody();
         }

@@ -15,12 +15,12 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface CurrencyRateRepository extends JpaRepository<CurrencyRateEntity, Long> {
 
-    @Query("SELECT cr FROM CurrencyRateEntity cr " +
-            "LEFT JOIN FETCH cr.quote ORDER BY cr.createdOn DESC ")
-    List<CurrencyRateView> findAllViews();
+  @Query("SELECT cr FROM CurrencyRateEntity cr " +
+      "LEFT JOIN FETCH cr.quote ORDER BY cr.createdOn DESC ")
+  List<CurrencyRateView> findAllViews();
 
-    @Query("SELECT cr FROM CurrencyRateEntity cr " +
-            "LEFT JOIN FETCH cr.quote WHERE cr.id = :id ")
-    Optional<CurrencyRateView> findByViewId(@Param(value = "id") Long id);
+  @Query("SELECT cr FROM CurrencyRateEntity cr " +
+      "LEFT JOIN FETCH cr.quote WHERE cr.id = :id ")
+  Optional<CurrencyRateView> findByViewId(@Param(value = "id") Long id);
 
 }

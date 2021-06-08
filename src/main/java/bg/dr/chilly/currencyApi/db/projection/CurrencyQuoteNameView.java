@@ -4,12 +4,12 @@ import java.time.Instant;
 
 public interface CurrencyQuoteNameView {
 
-    String getId();
+  String getId();
 
-    String getName();
+  String getName();
 
-    Instant getCreatedOn();
+  Instant getCreatedOn();
 
-    Instant getUpdatedOn();
+  Instant getUpdatedOn();
 
 }
