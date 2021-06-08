@@ -2,6 +2,7 @@ package bg.dr.chilly.currencyApi.service;
 
 import bg.dr.chilly.currencyApi.db.model.CurrencyQuoteNameEntity;
 import bg.dr.chilly.currencyApi.db.model.CurrencyRateEntity;
+import bg.dr.chilly.currencyApi.db.model.SourceEnum;
 import bg.dr.chilly.currencyApi.db.projection.CurrencyRateView;
 
 import java.math.BigDecimal;
@@ -18,23 +19,19 @@ public interface CurrencyRateService {
 
   String saveCurrencyRateEntities(List<CurrencyRateEntity> entities);
 
-//  void updateCurrencyRatesFromFixerIO();
-
-//  void updateCurrencyQuoteNamesFromFixerIO();
-
   List<CurrencyRateView> getAll();
 
   String createCustomCurrencyRate(String currencyQuoteId, String base, BigDecimal rate);
 
   CurrencyRateView getCurrencyRateById(Long id);
 
-  CurrencyRateEntity updateCurrencyRateById(Long currencyRateId, String base, BigDecimal rate, Optional<BigDecimal> reverseRate,
-                                        String source, OffsetDateTime sourceCreatedOn);
+  CurrencyRateEntity updateCurrencyRateById(Long currencyRateId, String base, BigDecimal rate,
+      Optional<BigDecimal> reverseRate, SourceEnum source, OffsetDateTime sourceCreatedOn);
 
   void deleteCurrencyRate(Long id);
 
-  CurrencyRateEntity createCustomCurrencyRate(String base, BigDecimal rate, String source, Optional<Instant> sourceCreatedOn,
-                                              CurrencyQuoteNameEntity quoteName);
+  CurrencyRateEntity createCustomCurrencyRate(String base, BigDecimal rate, SourceEnum source,
+      Optional<Instant> sourceCreatedOn, CurrencyQuoteNameEntity quoteName);
 
   CurrencyQuoteNameEntity createCurrencyQuoteName(String currencyQuoteId, String name);
 

@@ -2,6 +2,7 @@ package bg.dr.chilly.currencyApi.service;
 
 import bg.dr.chilly.currencyApi.db.model.CurrencyQuoteNameEntity;
 import bg.dr.chilly.currencyApi.db.model.CurrencyRateEntity;
+import bg.dr.chilly.currencyApi.db.model.SourceEnum;
 import bg.dr.chilly.currencyApi.service.model.FixerIOLatestRatesResponse;
 import bg.dr.chilly.currencyApi.service.model.FixerIONamesResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -60,16 +61,18 @@ public class FixerIoServiceImpl implements FixerIoService {
     }
 
     private void createEntitiesFromFixerResponse(FixerIOLatestRatesResponse fixerResponse) {
-        if(fixerResponse.getSuccess()) {
+        if (fixerResponse.getSuccess()) {
             Long timestamp = fixerResponse.getTimestamp();
             String base = fixerResponse.getBase();
             List<CurrencyRateEntity> entitiesToBeSaved = new ArrayList<>();
             fixerResponse.getRates().entrySet().forEach(kvp -> {
                 Optional<CurrencyQuoteNameEntity> quoteNameOptional = currencyRateService
-                        .findCurrencyQuoteNameEntity(kvp.getKey());
+                    .findCurrencyQuoteNameEntity(kvp.getKey());
                 quoteNameOptional.ifPresent(currencyQuoteNameEntity -> entitiesToBeSaved.add(
-                        currencyRateService.createCustomCurrencyRate(base, BigDecimal.valueOf(kvp.getValue()), "FixerIO",
-                                Optional.of(Instant.ofEpochSecond(timestamp)), currencyQuoteNameEntity)));
+                    currencyRateService
+                        .createCustomCurrencyRate(base, BigDecimal.valueOf(kvp.getValue()),
+                            SourceEnum.FIXER_IO, Optional.of(Instant.ofEpochSecond(timestamp)),
+                            currencyQuoteNameEntity)));
             });
             currencyRateService.saveCurrencyRateEntities(entitiesToBeSaved);
         }

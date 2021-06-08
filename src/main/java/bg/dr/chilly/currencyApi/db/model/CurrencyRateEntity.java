@@ -49,7 +49,8 @@ public class CurrencyRateEntity {
   BigDecimal reverseRate;
 
   @Column(length = 50)
-  String source;
+  @Enumerated(EnumType.STRING)
+  SourceEnum source;
 
   @Column(name = "source_created_on")
   Instant sourceCreatedOn;

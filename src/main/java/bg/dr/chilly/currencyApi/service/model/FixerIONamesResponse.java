@@ -13,8 +13,8 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class FixerIONamesResponse {
 
-    Boolean success;
+  Boolean success;
 
-    Map<String, String> symbols = new HashMap<>();
+  Map<String, String> symbols = new HashMap<>();
 
 }

@@ -16,6 +16,7 @@ import org.mapstruct.Mapping;
 public interface CurrencyRateMapper {
 
   @Mapping(source = "source.quote", target = "quoteName")
+  @Mapping(source = "source.source.name", target = "source")
   CurrencyRateDTO currencyRateViewToDto(CurrencyRateView source);
 
   List<CurrencyRateDTO> currencyRateViewsToDtoList(List<CurrencyRateView> sources);
