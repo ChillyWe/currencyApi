@@ -25,17 +25,10 @@ import static bg.dr.chilly.currencyApi.util.Constants.*;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class CurrencyRateServiceImpl implements CurrencyRateService {
 
-//  @Autowired
-//  RestTemplate restTemplate;
   @Autowired
   CurrencyRateRepository currencyRateRepository;
   @Autowired
   CurrencyQuoteNameRepository currencyQuoteNameRepository;
-
-//  @Value("${fixer.base.url}")
-//  String fixerBaseUrl;
-//  @Value("${fixer.api.key}")
-//  String fixerApiKey;
 
   @Override
   @Transactional(readOnly = true)

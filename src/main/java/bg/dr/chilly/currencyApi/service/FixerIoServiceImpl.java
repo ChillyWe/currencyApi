@@ -46,17 +46,17 @@ public class FixerIoServiceImpl implements FixerIoService {
 
     @Override
     public void updateCurrencyRatesFromFixerIO() {
-//        FixerIOLatestRatesResponse fixerIoResponse = getFixerIOLatestResponse(
-//                fixerBaseUrl + FIXER_IO_LATEST_PREFIX + String.format(ACCESS_KEY_STRING_FORMAT, fixerApiKey));
-//        createEntitiesFromFixerResponse(fixerIoResponse);
-        try {
-            FixerIOLatestRatesResponse fixerResponse = objectMapper
-                .readValue(Paths.get("help/currencyRates_20210607.json").toFile(),
-                    FixerIOLatestRatesResponse.class);
-            createEntitiesFromFixerResponse(fixerResponse);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        FixerIOLatestRatesResponse fixerIoResponse = getFixerIOLatestResponse(
+                fixerBaseUrl + FIXER_IO_LATEST_PREFIX + String.format(ACCESS_KEY_STRING_FORMAT, fixerApiKey));
+        createEntitiesFromFixerResponse(fixerIoResponse);
+//        try {
+//            FixerIOLatestRatesResponse fixerResponse = objectMapper
+//                .readValue(Paths.get("help/currencyRates_20210607.json").toFile(),
+//                    FixerIOLatestRatesResponse.class);
+//            createEntitiesFromFixerResponse(fixerResponse);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
     }
 
     private void createEntitiesFromFixerResponse(FixerIOLatestRatesResponse fixerResponse) {
@@ -113,10 +113,8 @@ public class FixerIoServiceImpl implements FixerIoService {
             restTemplate.getForEntity(urlString, String.class);
 
         if (HttpStatus.OK.equals(fixerIOLatestRatesStringResponse.getStatusCode())) {
-//            String body = fixerIOLatestRatesStringResponse.getBody();
-
-//            FixerIOLatestRatesResponse fixerIOLatestRatesResponse = objectMapper.readValue(body, FixerIOLatestRatesResponse.class);
-//            return fixerIOLatestRatesResponse;
+            String body = fixerIOLatestRatesStringResponse.getBody();
+            return objectMapper.readValue(body, FixerIOLatestRatesResponse.class);
         }
         // TODO: 6/1/21 custom exception
         log.error("Can not get Fixer IO response");

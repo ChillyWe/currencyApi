@@ -62,7 +62,8 @@ public class RatesApiDelegateImpl implements RatesApiDelegate {
             HttpHeaders headers = new HttpHeaders();
             headers.add("Content-Disposition", "attachment; filename=currencyRateExport.xlsx");
 
-            ByteArrayInputStream in = CurrencyRateExcelReportWriter.writeExcelReport(currencyRateService.getAll());
+            ByteArrayInputStream in = CurrencyRateExcelReportWriter
+                .writeExcelReport(currencyRateService.getAll());
             return ResponseEntity.ok().headers(headers).body(new InputStreamResource(in));
         } catch (IOException e) {
             log.error("xlsx export fail ! ", e);
@@ -76,7 +77,8 @@ public class RatesApiDelegateImpl implements RatesApiDelegate {
     @Override
     public ResponseEntity<String> createRate(CreateCurrencyRateDTO createCurrencyRateDTO) {
         return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON)
-                .body(currencyRateService.createCustomCurrencyRate(createCurrencyRateDTO.getQuoteName().getId(),
+                .body(currencyRateService
+                    .createCustomCurrencyRate(createCurrencyRateDTO.getQuoteName().getId(),
                     createCurrencyRateDTO.getBase(), createCurrencyRateDTO.getRate()));
     }
 
@@ -86,7 +88,8 @@ public class RatesApiDelegateImpl implements RatesApiDelegate {
     @Override
     public ResponseEntity<CurrencyRateDTO> getRate(Long rateId) {
         return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON)
-                .body(currencyRateMapper.currencyRateViewToDto(currencyRateService.getCurrencyRateById(rateId)));
+                .body(currencyRateMapper
+                    .currencyRateViewToDto(currencyRateService.getCurrencyRateById(rateId)));
     }
 
     /**
@@ -115,10 +118,10 @@ public class RatesApiDelegateImpl implements RatesApiDelegate {
     public ResponseEntity<CurrencyRateDTO> updateRate(Long rateId, CurrencyRateDTO currencyRateDTO) {
         // TODO: 5/30/21 think if it is better to use query params instead of dto
         return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON)
-                .body(currencyRateMapper.currencyRateEntityToDto(currencyRateService.updateCurrencyRateById(rateId,
-                currencyRateDTO.getBase(), currencyRateDTO.getRate(),
-                currencyRateDTO.getReverseRate() != null ? Optional.of(currencyRateDTO.getReverseRate()): Optional.empty(),
-                currencyRateDTO.getSource(), currencyRateDTO.getSourceCreatedOn())));
+                .body(currencyRateMapper.currencyRateEntityToDto(currencyRateService
+                    .updateCurrencyRateById(rateId, currencyRateDTO.getBase(),
+                        currencyRateDTO.getRate(), currencyRateDTO.getReverseRate() != null ? Optional.of(currencyRateDTO.getReverseRate()): Optional.empty(),
+                        currencyRateDTO.getSource(), currencyRateDTO.getSourceCreatedOn())));
     }
 
     /**
@@ -160,8 +163,8 @@ public class RatesApiDelegateImpl implements RatesApiDelegate {
      * PUT /rates/{rateId}/quote-name/{quoteNameId} : Update currency rate quote name for given Id
      */
     @Override
-    public ResponseEntity<CurrencyRateDTO> updateCurrencyRateQuoteName(Long rateId, String quoteNameId,
-                                                                    CreateCurrencyQuoteNameDTO createCurrencyQuoteNameDTO) {
+    public ResponseEntity<CurrencyRateDTO> updateCurrencyRateQuoteName(Long rateId,
+        String quoteNameId, CreateCurrencyQuoteNameDTO createCurrencyQuoteNameDTO) {
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
     }
 
