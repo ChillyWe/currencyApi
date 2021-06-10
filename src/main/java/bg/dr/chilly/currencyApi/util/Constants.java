@@ -11,5 +11,6 @@ public class Constants {
 	public static final String FIXER_IO_LATEST_PREFIX = "/latest";
 	public static final String FIXER_IO_SYMBOLS_PREFIX = "/symbols";
 	public static final String ACCESS_KEY_STRING_FORMAT = "?access_key=%s";
+	public static final String BASE_EUR = "EUR";
 	
 }

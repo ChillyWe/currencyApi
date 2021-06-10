@@ -27,6 +27,7 @@ public class CurrencyRateExcelReportWriter {
 
   public static ByteArrayInputStream writeExcelReport(List<CurrencyRateView> currencyRates)
       throws IOException {
+
     String[] COLUMNs = {"Id", "CreatedOn", "UpdatedOn", "Base", "Quote", "Name", "Rate",
         "ReverseRate", "Source", "SourceCreatedOn"};
     try (

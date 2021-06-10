@@ -41,6 +41,7 @@ public class CurrencyRateServiceImpl implements CurrencyRateService {
   @Override
   @Transactional
   public String saveCurrencyQuoteNameEntity(CurrencyQuoteNameEntity entity) {
+
     Optional<CurrencyQuoteNameEntity> optional =
         currencyQuoteNameRepository.findById(entity.getId());
     if (optional.isEmpty()) {
@@ -53,6 +54,7 @@ public class CurrencyRateServiceImpl implements CurrencyRateService {
   @Override
   @Transactional
   public String saveCurrencyRateEntities(List<CurrencyRateEntity> entities) {
+
     List<CurrencyRateEntity> allAndFlush = currencyRateRepository.saveAllAndFlush(entities);
     if (!allAndFlush.isEmpty()) {
       return "Saved !";
@@ -69,12 +71,12 @@ public class CurrencyRateServiceImpl implements CurrencyRateService {
   @Override
   @Transactional
   public String createCustomCurrencyRate(String currencyQuoteId, String base, BigDecimal rate) {
+
     Optional<CurrencyQuoteNameEntity> currencyQuoteNameEntityOptional =
         currencyQuoteNameRepository.findById(currencyQuoteId);
     if (currencyQuoteNameEntityOptional.isPresent()) {
       CurrencyRateEntity currencyRateEntity = createCustomCurrencyRate(base, rate, CUSTOM,
-          Optional.of(Instant.now()),
-          currencyQuoteNameEntityOptional.get());
+          Optional.of(Instant.now()), currencyQuoteNameEntityOptional.get());
       currencyRateRepository.saveAndFlush(currencyRateEntity);
       return "Currency rate with id : " + currencyRateEntity.getId() + " was created ";
     }
@@ -86,6 +88,7 @@ public class CurrencyRateServiceImpl implements CurrencyRateService {
   @Override
   @Transactional(readOnly = true)
   public CurrencyRateView getCurrencyRateById(Long id) {
+
     Optional<CurrencyRateView> currencyRateEntityOptional = currencyRateRepository.findByViewId(id);
     if (currencyRateEntityOptional.isPresent()) {
       return currencyRateEntityOptional.get();
@@ -99,8 +102,9 @@ public class CurrencyRateServiceImpl implements CurrencyRateService {
   @Transactional
   public CurrencyRateEntity updateCurrencyRateById(Long currencyRateId, String base, BigDecimal rate,
       Optional<BigDecimal> reverseRate, SourceEnum source, OffsetDateTime sourceCreatedOn) {
-    Optional<CurrencyRateEntity> currencyRateEntityOptional = currencyRateRepository
-        .findById(currencyRateId);
+
+    Optional<CurrencyRateEntity> currencyRateEntityOptional =
+        currencyRateRepository.findById(currencyRateId);
     if (currencyRateEntityOptional.isPresent()) {
       CurrencyRateEntity entity = currencyRateEntityOptional.get();
       entity.setUpdatedOn(Instant.now());
@@ -120,6 +124,7 @@ public class CurrencyRateServiceImpl implements CurrencyRateService {
   @Override
   @Transactional
   public void deleteCurrencyRate(Long id) {
+
     Optional<CurrencyRateEntity> currencyRateEntityOptional = currencyRateRepository.findById(id);
     if (currencyRateEntityOptional.isPresent()) {
       CurrencyRateEntity entity = currencyRateEntityOptional.get();
@@ -132,8 +137,8 @@ public class CurrencyRateServiceImpl implements CurrencyRateService {
   }
 
   @Override
-  public CurrencyRateEntity createCustomCurrencyRate(String base, BigDecimal rate, SourceEnum source,
-      Optional<Instant> sourceCreatedOn, CurrencyQuoteNameEntity quoteName) {
+  public CurrencyRateEntity createCustomCurrencyRate(String base, BigDecimal rate,
+      SourceEnum source, Optional<Instant> sourceCreatedOn, CurrencyQuoteNameEntity quoteName) {
     return CurrencyRateEntity.builder()
         .createdOn(Instant.now())
         .updatedOn(Instant.now())

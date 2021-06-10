@@ -17,9 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.io.IOException;
 import java.math.BigDecimal;
-import java.nio.file.Paths;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
@@ -47,6 +45,7 @@ public class FixerIoServiceImpl implements FixerIoService {
 
     @Override
     public void updateCurrencyRatesFromFixerIO() {
+
         FixerIOLatestRatesResponse fixerIoResponse = getFixerIOLatestResponse(
                 fixerBaseUrl + FIXER_IO_LATEST_PREFIX + String.format(ACCESS_KEY_STRING_FORMAT, fixerApiKey));
         createEntitiesFromFixerResponse(fixerIoResponse);
@@ -61,6 +60,7 @@ public class FixerIoServiceImpl implements FixerIoService {
     }
 
     private void createEntitiesFromFixerResponse(FixerIOLatestRatesResponse fixerResponse) {
+
         if (fixerResponse.getSuccess()) {
             Long timestamp = fixerResponse.getTimestamp();
             String base = fixerResponse.getBase();
@@ -79,6 +79,7 @@ public class FixerIoServiceImpl implements FixerIoService {
     }
 
     private void createCurrencyQuoteNamesFromFixerResponse(FixerIONamesResponse fixerIONamesResponse) {
+
 //      try {
 //          FixerIONamesResponse fixerIONamesResponse = objectMapper
 //              .readValue(Paths.get("help/currencyQuoteTranslation.json").toFile(),
@@ -104,6 +105,7 @@ public class FixerIoServiceImpl implements FixerIoService {
 
     @Override
     public void updateCurrencyQuoteNamesFromFixerIO() {
+
         FixerIONamesResponse fixerIONamesResponse = getFixerIONamesResponse(
             fixerBaseUrl + FIXER_IO_SYMBOLS_PREFIX +
                 String.format(ACCESS_KEY_STRING_FORMAT, fixerApiKey));
@@ -112,6 +114,7 @@ public class FixerIoServiceImpl implements FixerIoService {
 
     @SneakyThrows
     private FixerIOLatestRatesResponse getFixerIOLatestResponse(String urlString) {
+
         ResponseEntity<String> fixerIOLatestRatesStringResponse =
             restTemplate.getForEntity(urlString, String.class);
 
@@ -125,6 +128,7 @@ public class FixerIoServiceImpl implements FixerIoService {
     }
 
     private FixerIONamesResponse getFixerIONamesResponse(String urlString) {
+
         ResponseEntity<FixerIONamesResponse> fixerIOQuoteNamesResponseResponse =
             restTemplate.getForEntity(urlString, FixerIONamesResponse.class);
         if (HttpStatus.OK.equals(fixerIOQuoteNamesResponseResponse.getStatusCode())) {
