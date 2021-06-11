@@ -1,6 +1,6 @@
 package bg.dr.chilly.currencyApi.service;
 
-import bg.dr.chilly.currencyApi.db.model.SourceEnum;
+import bg.dr.chilly.currencyApi.db.model.enums.SourceEnum;
 import bg.dr.chilly.currencyApi.db.repository.CurrencyQuoteNameRepository;
 import bg.dr.chilly.currencyApi.db.repository.CurrencyRateRepository;
 import bg.dr.chilly.currencyApi.db.model.CurrencyQuoteNameEntity;
@@ -19,7 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import static bg.dr.chilly.currencyApi.db.model.SourceEnum.CUSTOM;
+import static bg.dr.chilly.currencyApi.db.model.enums.SourceEnum.CUSTOM;
 import static bg.dr.chilly.currencyApi.util.Constants.*;
 
 @Slf4j
@@ -145,7 +145,6 @@ public class CurrencyRateServiceImpl implements CurrencyRateService {
         .base(base)
         .rate(rate)
         .reverseRate(DEFAULT_AMOUNT.divide(rate, 18, RoundingMode.HALF_DOWN))
-        // TODO: 5/28/21 change source to be enum
         .source(source)
         .sourceCreatedOn(sourceCreatedOn.orElse(null))
         .quote(quoteName).build();

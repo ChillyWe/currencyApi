@@ -1,5 +1,6 @@
 package bg.dr.chilly.currencyApi.db.model;
 
+import bg.dr.chilly.currencyApi.db.model.enums.SourceEnum;
 import java.math.BigDecimal;
 import java.time.Instant;
 import javax.persistence.*;

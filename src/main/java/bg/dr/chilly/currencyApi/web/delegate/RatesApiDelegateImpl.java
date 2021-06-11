@@ -6,7 +6,7 @@ import bg.dr.chilly.currencyApi.api.model.CreateCurrencyQuoteNameDTO;
 import bg.dr.chilly.currencyApi.api.model.CreateCurrencyRateDTO;
 import bg.dr.chilly.currencyApi.api.model.CurrencyQuoteNameDTO;
 import bg.dr.chilly.currencyApi.api.model.CurrencyRateDTO;
-import bg.dr.chilly.currencyApi.db.model.SourceEnum;
+import bg.dr.chilly.currencyApi.db.model.enums.SourceEnum;
 import bg.dr.chilly.currencyApi.service.CurrencyRateService;
 import bg.dr.chilly.currencyApi.service.ECBService;
 import bg.dr.chilly.currencyApi.service.FixerIoService;
@@ -42,9 +42,9 @@ public class RatesApiDelegateImpl implements RatesApiDelegate {
     @Autowired
     FixerIoService fixerIoService;
     @Autowired
-    final CurrencyRateService currencyRateService;
+    CurrencyRateService currencyRateService;
     @Autowired
-    final CurrencyRateMapper currencyRateMapper;
+    CurrencyRateMapper currencyRateMapper;
 
     /**
      * GET /rates : Return all currency rates ordered by created date descending

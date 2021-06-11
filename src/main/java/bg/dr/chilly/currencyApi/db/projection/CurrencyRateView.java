@@ -1,6 +1,6 @@
 package bg.dr.chilly.currencyApi.db.projection;
 
-import bg.dr.chilly.currencyApi.db.model.SourceEnum;
+import bg.dr.chilly.currencyApi.db.model.enums.SourceEnum;
 import java.math.BigDecimal;
 import java.time.Instant;
 

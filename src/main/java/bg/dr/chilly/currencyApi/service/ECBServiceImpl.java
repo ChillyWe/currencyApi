@@ -4,7 +4,7 @@ import static bg.dr.chilly.currencyApi.util.Constants.BASE_EUR;
 
 import bg.dr.chilly.currencyApi.db.model.CurrencyQuoteNameEntity;
 import bg.dr.chilly.currencyApi.db.model.CurrencyRateEntity;
-import bg.dr.chilly.currencyApi.db.model.SourceEnum;
+import bg.dr.chilly.currencyApi.db.model.enums.SourceEnum;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
@@ -16,7 +16,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
 import java.math.BigDecimal;
@@ -38,6 +37,7 @@ public class ECBServiceImpl implements ECBService {
   RestTemplate restTemplate;
   @Autowired
   CurrencyRateService currencyRateService;
+
   @Value("${ecb.base.url}")
   String ecbBaseUrl;
 
@@ -54,12 +54,7 @@ public class ECBServiceImpl implements ECBService {
     ResponseEntity<String> getEcbDailyResponseResponse =
         restTemplate.getForEntity(urlString, String.class);
     if (HttpStatus.OK.equals(getEcbDailyResponseResponse.getStatusCode())) {
-      try {
-        return extractEcbResponseElements(getEcbDailyResponseResponse);
-      } catch (JsonProcessingException e) {
-        // TODO: 6/6/21 handle
-        e.printStackTrace();
-      }
+      return extractEcbResponseElements(getEcbDailyResponseResponse);
     }
     // TODO: 6/1/21 custom exception
     log.error("Can not get European Central Bank response");
@@ -114,18 +109,23 @@ public class ECBServiceImpl implements ECBService {
   }
 
   private List<String> extractEcbResponseElements(
-      ResponseEntity<String> getEcbDailyResponseResponse) throws JsonProcessingException {
+      ResponseEntity<String> getEcbDailyResponseResponse) {
 
-    JsonNode jsonNode = xmlMapper.readTree(getEcbDailyResponseResponse.getBody());
-    String cube = jsonNode.get("Cube").toString();
+    try {
+      JsonNode jsonNode = xmlMapper.readTree(getEcbDailyResponseResponse.getBody());
+      String cube = jsonNode.get("Cube").toString();
 
-    // TODO: 6/10/21 try to extract elements with mapper
-    // remove elements which is not needed and get elements
-    return Arrays.stream(cube.replaceAll("Cube", "").replaceAll("time", "")
-        .replaceAll("currency", "").replaceAll("rate", "").replaceAll("\\{", "")
-        .replaceAll("\\}", "").replaceAll("\\[", "").replaceAll(",", "")
-        .replaceAll("\\]", "").replaceAll("\"", "").split(":"))
-        .collect(Collectors.toList());
+      // TODO: 6/10/21 try to extract elements with mapper
+      // remove elements which is not needed and get elements
+      return Arrays.stream(cube.replaceAll("Cube", "").replaceAll("time", "")
+          .replaceAll("currency", "").replaceAll("rate", "").replaceAll("\\{", "")
+          .replaceAll("\\}", "").replaceAll("\\[", "").replaceAll(",", "")
+          .replaceAll("\\]", "").replaceAll("\"", "").split(":"))
+          .collect(Collectors.toList());
+    } catch (JsonProcessingException e) {
+      log.error("Can not parse ECB elements!");
+      throw new RuntimeException("Can not parse ECB elements!");
+    }
   }
 
 }

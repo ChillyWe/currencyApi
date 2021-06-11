@@ -2,7 +2,7 @@ package bg.dr.chilly.currencyApi.service;
 
 import bg.dr.chilly.currencyApi.db.model.CurrencyQuoteNameEntity;
 import bg.dr.chilly.currencyApi.db.model.CurrencyRateEntity;
-import bg.dr.chilly.currencyApi.db.model.SourceEnum;
+import bg.dr.chilly.currencyApi.db.model.enums.SourceEnum;
 import bg.dr.chilly.currencyApi.service.model.FixerIOLatestRatesResponse;
 import bg.dr.chilly.currencyApi.service.model.FixerIONamesResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;

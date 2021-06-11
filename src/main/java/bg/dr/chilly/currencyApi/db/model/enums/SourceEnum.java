@@ -1,4 +1,4 @@
-package bg.dr.chilly.currencyApi.db.model;
+package bg.dr.chilly.currencyApi.db.model.enums;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
