@@ -28,6 +28,8 @@ public interface CurrencyRateService {
   CurrencyRateEntity updateCurrencyRateById(Long currencyRateId, String base, BigDecimal rate,
       Optional<BigDecimal> reverseRate, SourceEnum source, OffsetDateTime sourceCreatedOn);
 
+  CurrencyQuoteNameEntity updateCurrencyRateQuoteName(Long rateId, String quoteName);
+
   void deleteCurrencyRate(Long id);
 
   CurrencyRateEntity createCustomCurrencyRate(String base, BigDecimal rate, SourceEnum source,

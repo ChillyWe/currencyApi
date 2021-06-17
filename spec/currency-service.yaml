@@ -201,7 +201,7 @@ paths:
   /rates/quote-name/update-fixer:
     post:
       summary: Update currency quote names from fixer.io
-      operationId: updateCurrencyQuoteName
+      operationId: updateCurrencyQuoteNameFromFixer
       responses:
         200:
           description: Created
@@ -238,9 +238,8 @@ paths:
           description: Not found
         default:
           description: Unexpected error
-  /rates/{rateId}/quote-name/{quoteNameId}:
     put:
-      summary: Update currency rate quote name for given Id
+      summary: Update currency rate quote name for given rate Id
       operationId: updateCurrencyRateQuoteName
       parameters:
         - name: rateId
@@ -250,54 +249,21 @@ paths:
           schema:
             type: integer
             format: int64
-        - name: quoteNameId
-          in: path
-          description: quoteNameId
+        - name: quoteName
+          in: query
+          description: quoteName
           required: true
           schema:
             type: string
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/CreateCurrencyQuoteName'
       responses:
         200:
           description: Ok
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CurrencyRate'
+                $ref: '#/components/schemas/CurrencyQuoteName'
         204:
           description: No Content
-        400:
-          description: Bad data
-        404:
-          description: Not found
-        default:
-          description: Unexpected error
-    delete:
-      summary: Delete currency rate quote name for given Id
-      operationId: deleteCurrencyRateQuoteName
-      parameters:
-        - name: rateId
-          in: path
-          description: rateId
-          required: true
-          schema:
-            type: integer
-            format: int64
-        - name: quoteNameId
-          in: path
-          description: quoteNameId
-          required: true
-          schema:
-            type: string
-      responses:
-        200:
-          description: Ok
-          content: { }
         400:
           description: Bad data
         404:

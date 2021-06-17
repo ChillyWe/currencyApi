@@ -68,6 +68,27 @@
 			"response": []
 		},
 		{
+			"name": "post - update from ECB",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/currency/rates/update-ecb",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"currency",
+						"rates",
+						"update-ecb"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "post - create currency rate",
 			"request": {
 				"method": "POST",
@@ -163,6 +184,74 @@
 						"currency",
 						"rates",
 						"169"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get - get currency quote name by rate id",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"id\": 169,\n    \"base\": \"EUR\",\n    \"rate\": 1.96,\n    \"reverseRate\": 0.4988205128205128,\n    \"source\": \"More Custom\",\n    \"sourceCreatedOn\": \"2021-05-30T15:00:20Z\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/currency/rates/100/quote-name",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"currency",
+						"rates",
+						"100",
+						"quote-name"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "put - update currency quote name by rate id",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"id\": 169,\n    \"base\": \"EUR\",\n    \"rate\": 1.96,\n    \"reverseRate\": 0.4988205128205128,\n    \"source\": \"More Custom\",\n    \"sourceCreatedOn\": \"2021-05-30T15:00:20Z\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/currency/rates/100/quote-name",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"currency",
+						"rates",
+						"100",
+						"quote-name"
 					]
 				}
 			},

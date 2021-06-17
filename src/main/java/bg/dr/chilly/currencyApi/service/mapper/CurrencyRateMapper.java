@@ -2,6 +2,7 @@ package bg.dr.chilly.currencyApi.service.mapper;
 
 import bg.dr.chilly.currencyApi.api.model.CurrencyQuoteNameDTO;
 import bg.dr.chilly.currencyApi.api.model.CurrencyRateDTO;
+import bg.dr.chilly.currencyApi.db.model.CurrencyQuoteNameEntity;
 import bg.dr.chilly.currencyApi.db.model.CurrencyRateEntity;
 import bg.dr.chilly.currencyApi.db.projection.CurrencyQuoteNameView;
 import bg.dr.chilly.currencyApi.db.projection.CurrencyRateView;
@@ -25,6 +26,8 @@ public interface CurrencyRateMapper {
 
   @Mapping(source = "source.quote", target = "quoteName")
   CurrencyRateDTO currencyRateEntityToDto(CurrencyRateEntity source);
+
+  CurrencyQuoteNameDTO currencyQuoteNameEntityToDto(CurrencyQuoteNameEntity source);
 
   default OffsetDateTime map(Instant instant) {
     return instant == null ? null : OffsetDateTime.ofInstant(instant, ZoneId.of("UTC"));

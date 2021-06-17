@@ -55,8 +55,8 @@ public class CurrencyRateServiceImpl implements CurrencyRateService {
   @Transactional
   public String saveCurrencyRateEntities(List<CurrencyRateEntity> entities) {
 
-    List<CurrencyRateEntity> allAndFlush = currencyRateRepository.saveAllAndFlush(entities);
-    if (!allAndFlush.isEmpty()) {
+    List<CurrencyRateEntity> savedEntities = currencyRateRepository.saveAllAndFlush(entities);
+    if (!savedEntities.isEmpty()) {
       return "Saved !";
     }
     throw new RuntimeException("Can not save currency rates! ");
@@ -118,6 +118,24 @@ public class CurrencyRateServiceImpl implements CurrencyRateService {
     }
     // TODO: 5/30/21 handle exception better
     log.error("Currency rate with id: " + currencyRateId + " not found");
+    throw new IllegalArgumentException("Currency rate not found");
+  }
+
+  @Override
+  @Transactional
+  public CurrencyQuoteNameEntity updateCurrencyRateQuoteName(Long rateId, String quoteName) {
+
+    Optional<CurrencyRateEntity> currencyRateEntityOptional =
+        currencyRateRepository.findById(rateId);
+    if (currencyRateEntityOptional.isPresent()) {
+      CurrencyRateEntity currencyRateEntity = currencyRateEntityOptional.get();
+      CurrencyQuoteNameEntity currencyQuoteNameEntity = currencyRateEntity.getQuote();
+      currencyQuoteNameEntity.setName(quoteName);
+      currencyQuoteNameEntity.setUpdatedOn(Instant.now());
+      return currencyQuoteNameRepository.saveAndFlush(currencyQuoteNameEntity);
+    }
+    // TODO: 6/17/21 handle
+    log.error("Currency rate with id: " + rateId + " not found");
     throw new IllegalArgumentException("Currency rate not found");
   }
 
