@@ -7,6 +7,8 @@ import bg.dr.chilly.currencyApi.db.model.CurrencyQuoteNameEntity;
 import bg.dr.chilly.currencyApi.db.model.CurrencyRateEntity;
 import bg.dr.chilly.currencyApi.db.projection.CurrencyRateView;
 
+import bg.dr.chilly.currencyApi.exceptions.CurrencyRateException;
+import bg.dr.chilly.currencyApi.exceptions.enums.CurrencyRateExceptionEnum;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.*;
@@ -20,6 +22,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import static bg.dr.chilly.currencyApi.db.model.enums.SourceEnum.CUSTOM;
+import static bg.dr.chilly.currencyApi.exceptions.enums.CurrencyRateExceptionEnum.CS_001;
+import static bg.dr.chilly.currencyApi.exceptions.enums.CurrencyRateExceptionEnum.CS_002;
+import static bg.dr.chilly.currencyApi.exceptions.enums.CurrencyRateExceptionEnum.CS_003;
 import static bg.dr.chilly.currencyApi.util.Constants.*;
 
 @Slf4j
@@ -47,8 +52,7 @@ public class CurrencyRateServiceImpl implements CurrencyRateService {
     if (optional.isEmpty()) {
       return currencyQuoteNameRepository.saveAndFlush(entity).getId();
     }
-    // TODO: 6/7/21 handle
-    throw new RuntimeException("Already saved ");
+    throw createCurrencyRateException(CS_001);
   }
 
   @Override
@@ -57,9 +61,10 @@ public class CurrencyRateServiceImpl implements CurrencyRateService {
 
     List<CurrencyRateEntity> savedEntities = currencyRateRepository.saveAllAndFlush(entities);
     if (!savedEntities.isEmpty()) {
-      return "Saved !";
+      return "Entities was saved! ";
     }
-    throw new RuntimeException("Can not save currency rates! ");
+    log.warn(CS_002.getMessage() + entities);
+    throw createCurrencyRateException(CS_002);
   }
 
   @Override
@@ -78,11 +83,10 @@ public class CurrencyRateServiceImpl implements CurrencyRateService {
       CurrencyRateEntity currencyRateEntity = createCustomCurrencyRate(base, rate, CUSTOM,
           Optional.of(Instant.now()), currencyQuoteNameEntityOptional.get());
       currencyRateRepository.saveAndFlush(currencyRateEntity);
-      return "Currency rate with id : " + currencyRateEntity.getId() + " was created ";
+      return "Currency rate with id : " + currencyRateEntity.getId() + " was created! ";
     }
-    // TODO: 6/1/21 custom exception
-    log.error("Currency quote with id: " + currencyQuoteId + " not found");
-    throw new IllegalArgumentException("Currency quote not found");
+    log.warn("Currency quote with id: " + currencyQuoteId + " not found! ");
+    throw createCurrencyRateException(CS_001);
   }
 
   @Override
@@ -93,9 +97,8 @@ public class CurrencyRateServiceImpl implements CurrencyRateService {
     if (currencyRateEntityOptional.isPresent()) {
       return currencyRateEntityOptional.get();
     }
-    // TODO: 5/29/21 handle exception better
-    log.error("Currency rate with id: " + id + " not found");
-    throw new IllegalArgumentException("Currency rate not found");
+    log.warn("Currency rate with id: " + id + " not found! ");
+    throw createCurrencyRateException(CS_003);
   }
 
   @Override
@@ -116,9 +119,8 @@ public class CurrencyRateServiceImpl implements CurrencyRateService {
       entity.setSourceCreatedOn(sourceCreatedOn.toInstant());
       return currencyRateRepository.save(entity);
     }
-    // TODO: 5/30/21 handle exception better
-    log.error("Currency rate with id: " + currencyRateId + " not found");
-    throw new IllegalArgumentException("Currency rate not found");
+    log.warn("Currency rate with id: " + currencyRateId + " not found! ");
+    throw createCurrencyRateException(CS_003);
   }
 
   @Override
@@ -134,9 +136,8 @@ public class CurrencyRateServiceImpl implements CurrencyRateService {
       currencyQuoteNameEntity.setUpdatedOn(Instant.now());
       return currencyQuoteNameRepository.saveAndFlush(currencyQuoteNameEntity);
     }
-    // TODO: 6/17/21 handle
-    log.error("Currency rate with id: " + rateId + " not found");
-    throw new IllegalArgumentException("Currency rate not found");
+    log.warn("Currency rate with id: " + rateId + " not found! ");
+    throw createCurrencyRateException(CS_003);
   }
 
   @Override
@@ -148,9 +149,8 @@ public class CurrencyRateServiceImpl implements CurrencyRateService {
       CurrencyRateEntity entity = currencyRateEntityOptional.get();
       currencyRateRepository.delete(entity);
     } else {
-      // TODO: 5/30/21 handle exception better
-      log.error("Currency rate with id: " + id + " not found");
-      throw new IllegalArgumentException("Currency rate not found");
+      log.warn("Currency rate with id: " + id + " not found! ");
+      throw createCurrencyRateException(CS_003);
     }
   }
 
@@ -175,6 +175,11 @@ public class CurrencyRateServiceImpl implements CurrencyRateService {
         .createdOn(Instant.now())
         .updatedOn(Instant.now())
         .name(name).build();
+  }
+
+  private CurrencyRateException createCurrencyRateException(CurrencyRateExceptionEnum exceptionEnum) {
+    return CurrencyRateException.builder().code(exceptionEnum.name())
+        .message(exceptionEnum.getMessage()).build();
   }
 
 }
