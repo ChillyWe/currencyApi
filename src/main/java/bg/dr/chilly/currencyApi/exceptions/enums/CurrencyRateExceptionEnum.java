@@ -14,9 +14,8 @@ public enum CurrencyRateExceptionEnum {
   CS_002("Can not save currency rates! "),
   CS_003("Currency rate not found! "),
 
-  GE_400("Bad request"),
-  GE_500("General error");
+  GE_400("Bad request! "),
+  GE_500("General error! ");
 
-  final String message;
-
+  private final String defaultErrorMessage;
 }

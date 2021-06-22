@@ -63,7 +63,7 @@ public class CurrencyRateServiceImpl implements CurrencyRateService {
     if (!savedEntities.isEmpty()) {
       return "Entities was saved! ";
     }
-    log.warn(CS_002.getMessage() + entities);
+    log.warn(CS_002.getDefaultErrorMessage() + entities);
     throw createCurrencyRateException(CS_002);
   }
 
@@ -179,7 +179,7 @@ public class CurrencyRateServiceImpl implements CurrencyRateService {
 
   private CurrencyRateException createCurrencyRateException(CurrencyRateExceptionEnum exceptionEnum) {
     return CurrencyRateException.builder().code(exceptionEnum.name())
-        .message(exceptionEnum.getMessage()).build();
+        .message(exceptionEnum.getDefaultErrorMessage()).build();
   }
 
 }

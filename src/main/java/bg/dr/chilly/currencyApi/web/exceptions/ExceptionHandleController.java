@@ -16,7 +16,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 public class ExceptionHandleController extends ResponseEntityExceptionHandler {
 
   @ExceptionHandler(CurrencyRateException.class)
-  public ResponseEntity<CurrencyRateExceptionResponse> handleCityNotFoundException(
+  public ResponseEntity<CurrencyRateExceptionResponse> handleCurrencyRateException(
       CurrencyRateException ex, WebRequest request) {
 
     return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON)
