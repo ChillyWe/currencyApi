@@ -16,13 +16,13 @@
   <description>Demo project with Spring Boot</description>
 
   <properties>
-    <java.version>15</java.version>
-    <maven.compiler.source>15</maven.compiler.source>
-    <maven.compiler.target>15</maven.compiler.target>
-    <jackson.version>2.12.3</jackson.version>
+    <java.version>17</java.version>
+    <maven.compiler.source>17</maven.compiler.source>
+    <maven.compiler.target>17</maven.compiler.target>
+    <jackson.version>2.12.5</jackson.version>
     <jackson.databind.version>0.2.1</jackson.databind.version>
-    <flyway.version>7.9.1</flyway.version>
-    <openApi.version>1.5.9</openApi.version>
+    <flyway.version>8.1.0</flyway.version>
+    <openApi.version>1.5.12</openApi.version>
     <spring.fox.version>2.9.2</spring.fox.version>
     <mapstruct.version>1.4.2.Final</mapstruct.version>
     <apache.poi.version>5.0.0</apache.poi.version>
@@ -157,7 +157,7 @@
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-api</artifactId>
-      <version>5.8.0-M1</version>
+      <version>5.8.2</version>
       <scope>test</scope>
     </dependency>
     <!--      Mockito -->
