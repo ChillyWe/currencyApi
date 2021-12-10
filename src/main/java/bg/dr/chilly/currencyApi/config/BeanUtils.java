@@ -21,7 +21,10 @@ public class BeanUtils {
 
   @Bean
   public XmlMapper xmlMapper() {
-    return new XmlMapper();
+    XmlMapper xmlMapper = new XmlMapper();
+    xmlMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+    // xmlMapper.setDefaultUseWrapper(false);
+    return xmlMapper;
   }
 
   @Bean
