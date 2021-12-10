@@ -20,7 +20,7 @@
     <maven.compiler.source>17</maven.compiler.source>
     <maven.compiler.target>17</maven.compiler.target>
     <jackson.version>2.12.5</jackson.version>
-    <jackson.databind.version>0.2.1</jackson.databind.version>
+    <jackson.databind.version>0.2.2</jackson.databind.version>
     <flyway.version>8.1.0</flyway.version>
     <openApi.version>1.5.12</openApi.version>
     <spring.fox.version>2.9.2</spring.fox.version>
