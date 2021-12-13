@@ -5,7 +5,6 @@ import static bg.dr.chilly.currencyApi.util.Constants.BASE_EUR;
 import bg.dr.chilly.currencyApi.db.model.CurrencyQuoteNameEntity;
 import bg.dr.chilly.currencyApi.db.model.CurrencyRateEntity;
 import bg.dr.chilly.currencyApi.db.model.enums.SourceEnum;
-import bg.dr.chilly.currencyApi.service.model.ECBCubeList;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
@@ -14,6 +13,8 @@ import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -38,8 +39,7 @@ public class ECBServiceImpl implements ECBService {
   final CurrencyRateService currencyRateService;
 
   @Autowired
-  public ECBServiceImpl(XmlMapper xmlMapper, RestTemplate restTemplate,
-      CurrencyRateService currencyRateService) {
+  public ECBServiceImpl(XmlMapper xmlMapper, RestTemplate restTemplate, CurrencyRateService currencyRateService) {
     this.xmlMapper = xmlMapper;
     this.restTemplate = restTemplate;
     this.currencyRateService = currencyRateService;
@@ -54,59 +54,14 @@ public class ECBServiceImpl implements ECBService {
   }
 
   private List<String> getECBDailyResponse(String urlString) {
-    String testString =  "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-        + "<gesmes:Envelope xmlns:gesmes=\"http://www.gesmes.org/xml/2002-08-01\" xmlns=\"http://www.ecb.int/vocabulary/2002-08-01/eurofxref\">\n"
-        + "\t<gesmes:subject>Reference rates</gesmes:subject>\n"
-        + "\t<gesmes:Sender>\n"
-        + "\t\t<gesmes:name>European Central Bank</gesmes:name>\n"
-        + "\t</gesmes:Sender>\n"
-        + "\t<Cube>\n"
-        + "\t\t<Cube time='2021-12-10'>\n"
-        + "\t\t\t<Cube currency='USD' rate='1.1273'/>\n"
-        + "\t\t\t<Cube currency='JPY' rate='128.20'/>\n"
-        + "\t\t\t<Cube currency='BGN' rate='1.9558'/>\n"
-        + "\t\t\t<Cube currency='CZK' rate='25.365'/>\n"
-        + "\t\t\t<Cube currency='DKK' rate='7.4362'/>\n"
-        + "\t\t\t<Cube currency='GBP' rate='0.85355'/>\n"
-        + "\t\t\t<Cube currency='HUF' rate='365.58'/>\n"
-        + "\t\t\t<Cube currency='PLN' rate='4.6123'/>\n"
-        + "\t\t\t<Cube currency='RON' rate='4.9494'/>\n"
-        + "\t\t\t<Cube currency='SEK' rate='10.2463'/>\n"
-        + "\t\t\t<Cube currency='CHF' rate='1.0424'/>\n"
-        + "\t\t\t<Cube currency='ISK' rate='147.80'/>\n"
-        + "\t\t\t<Cube currency='NOK' rate='10.1335'/>\n"
-        + "\t\t\t<Cube currency='HRK' rate='7.5250'/>\n"
-        + "\t\t\t<Cube currency='RUB' rate='82.8024'/>\n"
-        + "\t\t\t<Cube currency='TRY' rate='15.6908'/>\n"
-        + "\t\t\t<Cube currency='AUD' rate='1.5765'/>\n"
-        + "\t\t\t<Cube currency='BRL' rate='6.2923'/>\n"
-        + "\t\t\t<Cube currency='CAD' rate='1.4340'/>\n"
-        + "\t\t\t<Cube currency='CNY' rate='7.1814'/>\n"
-        + "\t\t\t<Cube currency='HKD' rate='8.7918'/>\n"
-        + "\t\t\t<Cube currency='IDR' rate='16202.70'/>\n"
-        + "\t\t\t<Cube currency='ILS' rate='3.4931'/>\n"
-        + "\t\t\t<Cube currency='INR' rate='85.3105'/>\n"
-        + "\t\t\t<Cube currency='KRW' rate='1331.35'/>\n"
-        + "\t\t\t<Cube currency='MXN' rate='23.6094'/>\n"
-        + "\t\t\t<Cube currency='MYR' rate='4.7488'/>\n"
-        + "\t\t\t<Cube currency='NZD' rate='1.6635'/>\n"
-        + "\t\t\t<Cube currency='PHP' rate='56.746'/>\n"
-        + "\t\t\t<Cube currency='SGD' rate='1.5396'/>\n"
-        + "\t\t\t<Cube currency='THB' rate='37.945'/>\n"
-        + "\t\t\t<Cube currency='ZAR' rate='18.0414'/>\n"
-        + "\t\t</Cube>\n"
-        + "\t</Cube>\n"
-        + "</gesmes:Envelope>";
-
-    // ResponseEntity<String> getEcbDailyResponseResponse =
-    //     restTemplate.getForEntity(urlString, String.class);
-    // if (HttpStatus.OK.equals(getEcbDailyResponseResponse.getStatusCode())) {
-    //   return extractEcbResponseElements(getEcbDailyResponseResponse.getBody());
-      return extractEcbResponseElements(testString);
-    // }
+    ResponseEntity<String> getEcbDailyResponseResponse =
+        restTemplate.getForEntity(urlString, String.class);
+    if (HttpStatus.OK.equals(getEcbDailyResponseResponse.getStatusCode())) {
+      return extractEcbResponseElements(getEcbDailyResponseResponse.getBody());
+    }
     // TODO: 6/1/21 custom exception
-    // log.error("Can not get European Central Bank response");
-    // throw new RuntimeException("Can not get European Central Bank response");
+    log.error("Can not get European Central Bank response");
+    throw new RuntimeException("Can not get European Central Bank response");
   }
 
   private void createCurrencyRateEntitiesFromECBElements(List<String> ecbElements) {
@@ -153,17 +108,15 @@ public class ECBServiceImpl implements ECBService {
       }
     }
     //saving currency rates
-    // currencyRateService.saveCurrencyRateEntities(entitiesToBeSaved);
+    currencyRateService.saveCurrencyRateEntities(entitiesToBeSaved);
   }
 
   private List<String> extractEcbResponseElements(String getEcbDailyResponseResponse) {
 
     try {
       JsonNode jsonNode = xmlMapper.readTree(getEcbDailyResponseResponse);
-      ECBCubeList ecbCubeList = xmlMapper.readValue(getEcbDailyResponseResponse, ECBCubeList.class);
 
       String cube = jsonNode.get("Cube").toString();
-
       // TODO: 6/10/21 try to extract elements with mapper
       // remove elements which is not needed and get elements
       return Arrays.stream(cube.replaceAll("Cube", "").replaceAll("time", "")
