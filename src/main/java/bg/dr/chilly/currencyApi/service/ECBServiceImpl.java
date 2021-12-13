@@ -90,7 +90,7 @@ public class ECBServiceImpl implements ECBService {
         if (quoteNameOptional.isPresent()) {
           quoteName = quoteNameOptional.get();
         } else {
-          //in this case we don't have full name of currency quote so we use java.util.Currency to get it
+          //in this case we don't have full name of currency quote, so we use java.util.Currency to get it
           Currency currencyName = Currency.getInstance(currency);
           quoteName = CurrencyQuoteNameEntity.builder().id(currency)
               .name(currencyName.getDisplayName())
@@ -121,8 +121,8 @@ public class ECBServiceImpl implements ECBService {
       // remove elements which is not needed and get elements
       return Arrays.stream(cube.replaceAll("Cube", "").replaceAll("time", "")
           .replaceAll("currency", "").replaceAll("rate", "").replaceAll("\\{", "")
-          .replaceAll("\\}", "").replaceAll("\\[", "").replaceAll(",", "")
-          .replaceAll("\\]", "").replaceAll("\"", "").split(":"))
+          .replaceAll("}", "").replaceAll("\\[", "").replaceAll(",", "")
+          .replaceAll("]", "").replaceAll("\"", "").split(":"))
           .collect(Collectors.toList());
     } catch (JsonProcessingException e) {
       log.error("Can not parse ECB elements!");
