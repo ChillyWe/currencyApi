@@ -23,7 +23,7 @@
     <jackson.databind.version>0.2.2</jackson.databind.version>
     <flyway.version>8.1.0</flyway.version>
     <openApi.version>1.5.12</openApi.version>
-    <spring.fox.version>2.9.2</spring.fox.version>
+    <springfox.version>2.9.2</springfox.version>
     <mapstruct.version>1.4.2.Final</mapstruct.version>
     <apache.poi.version>5.0.0</apache.poi.version>
     <openapi.generator.maven.plugin>5.1.0</openapi.generator.maven.plugin>
@@ -106,12 +106,12 @@
     <dependency>
       <groupId>io.springfox</groupId>
       <artifactId>springfox-swagger2</artifactId>
-      <version>${spring.fox.version}</version>
+      <version>${springfox.version}</version>
     </dependency>
     <dependency>
       <groupId>io.springfox</groupId>
       <artifactId>springfox-swagger-ui</artifactId>
-      <version>${spring.fox.version}</version>
+      <version>${springfox.version}</version>
     </dependency>
     <!--		MapStruct	-->
     <dependency>
@@ -211,7 +211,7 @@
               <output>${project.build.directory}/generated-sources</output>
               <configOptions>
                 <basePackage>bg.dr.chilly.currencyApi</basePackage>
-<!--                <configPackage>bg.dr.chilly.currencyApi.config</configPackage>-->
+                <configPackage>bg.dr.chilly.currencyApi.config</configPackage>
                 <sourceFolder>src/gen/java/main</sourceFolder>
                 <delegatePattern>true</delegatePattern>
               </configOptions>
