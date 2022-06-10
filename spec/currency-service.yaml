@@ -10,15 +10,17 @@ info:
   version: '0.0.1-SNAPSHOT'
 
 servers:
-  - url: //127.0.0.1:8080
+  - url: //127.0.0.1:8081
 tags:
-  - name: Currency rate api
+  - name: currencyRateApi
     description: Currency Rate Controler
 
 paths:
   /rates:
     get:
       summary: Return all currency rates ordered by created date descending
+      tags:
+        - currencyRateApi
       operationId: getAllRates
       responses:
         200:
@@ -37,6 +39,8 @@ paths:
           description: Unexpected error
     post:
       summary: Create currency rate with given quoteNameId
+      tags:
+        - currencyRateApi
       operationId: createRate
       requestBody:
         required: true
@@ -58,6 +62,8 @@ paths:
   /rates/export:
     get:
       summary: Export all currency rates in xlsx file
+      tags:
+        - currencyRateApi
       operationId: exportCurrencyRates
       responses:
         200:
@@ -76,6 +82,8 @@ paths:
   /rates/update-fixer:
     post:
       summary: Get latest update from fixer.io api
+      tags:
+        - currencyRateApi
       operationId: updateCurrencyRates
       responses:
         200:
@@ -89,6 +97,8 @@ paths:
   /rates/update-ecb:
     post:
       summary: Get latest update from European Central Bank
+      tags:
+        - currencyRateApi
       operationId: updateCurrencyRatesFromECB
       responses:
         200:
@@ -102,6 +112,8 @@ paths:
   /rates/{rateId}:
     get:
       summary: Get currency rate for given Id
+      tags:
+        - currencyRateApi
       operationId: getRate
       parameters:
         - name: rateId
@@ -126,6 +138,8 @@ paths:
           description: Unexpected error
     put:
       summary: Update currency rate for given Id
+      tags:
+        - currencyRateApi
       operationId: updateRate
       parameters:
         - name: rateId
@@ -158,6 +172,8 @@ paths:
           description: Unexpected error
     delete:
       summary: Delete currency rate for given Id
+      tags:
+        - currencyRateApi
       operationId: deleteRate
       parameters:
         - name: rateId
@@ -180,6 +196,8 @@ paths:
   /rates/quote-name:
     post:
       summary: Create currency rate quote name
+      tags:
+        - currencyRateApi
       operationId: createCurrencyRateQuoteName
       requestBody:
         required: true
@@ -201,6 +219,8 @@ paths:
   /rates/quote-name/update-fixer:
     post:
       summary: Update currency quote names from fixer.io
+      tags:
+        - currencyRateApi
       operationId: updateCurrencyQuoteNameFromFixer
       responses:
         200:
@@ -216,6 +236,8 @@ paths:
   /rates/{rateId}/quote-name:
     get:
       summary: Get currency rate quote name for given Id
+      tags:
+        - currencyRateApi
       operationId: getCurrencyRateQuoteName
       parameters:
         - name: rateId
@@ -240,6 +262,8 @@ paths:
           description: Unexpected error
     put:
       summary: Update currency rate quote name for given rate Id
+      tags:
+        - currencyRateApi
       operationId: updateCurrencyRateQuoteName
       parameters:
         - name: rateId
@@ -280,10 +304,10 @@ components:
           format: int64
         createdOn:
           type: string
-          format: date-time
+          format: 'yyyy-mm-dd'
         updatedOn:
           type: string
-          format: date-time
+          format: 'yyyy-mm-dd'
         base:
           type: string
         quoteName:
@@ -296,7 +320,7 @@ components:
           type: string
         sourceCreatedOn:
           type: string
-          format: date-time
+          format: 'yyyy-mm-dd'
       required:
         - id
         - base
@@ -322,10 +346,10 @@ components:
           type: string
         createdOn:
           type: string
-          format: date-time
+          format: 'yyyy-mm-dd'
         updatedOn:
           type: string
-          format: date-time
+          format: 'yyyy-mm-dd'
       required:
         - id
         - name

@@ -7,10 +7,11 @@ import bg.dr.chilly.currencyApi.service.model.FixerIOLatestRatesResponse;
 import bg.dr.chilly.currencyApi.service.model.FixerIONamesResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.experimental.FieldDefaults;
+import lombok.experimental.NonFinal;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,18 +29,18 @@ import static bg.dr.chilly.currencyApi.util.Constants.*;
 
 @Slf4j
 @Service
-@FieldDefaults(level = AccessLevel.PRIVATE)
+@RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class FixerIoServiceImpl implements FixerIoService {
 
-    @Autowired
     RestTemplate restTemplate;
-    @Autowired
     ObjectMapper objectMapper;
-    @Autowired
     CurrencyRateService currencyRateService;
 
+    @NonFinal
     @Value("${fixer.base.url}")
     String fixerBaseUrl;
+    @NonFinal
     @Value("${fixer.api.key}")
     String fixerApiKey;
 

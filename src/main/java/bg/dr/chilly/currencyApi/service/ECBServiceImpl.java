@@ -9,9 +9,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import lombok.experimental.NonFinal;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,22 +29,17 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Service
-@FieldDefaults(level = AccessLevel.PRIVATE)
+@RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class ECBServiceImpl implements ECBService {
 
+  @NonFinal
   @Value("${ecb.base.url}")
   String ecbBaseUrl;
 
-  final XmlMapper xmlMapper;
-  final RestTemplate restTemplate;
-  final CurrencyRateService currencyRateService;
-
-  @Autowired
-  public ECBServiceImpl(XmlMapper xmlMapper, RestTemplate restTemplate, CurrencyRateService currencyRateService) {
-    this.xmlMapper = xmlMapper;
-    this.restTemplate = restTemplate;
-    this.currencyRateService = currencyRateService;
-  }
+  XmlMapper xmlMapper;
+  RestTemplate restTemplate;
+  CurrencyRateService currencyRateService;
 
   @Override
   public String updateCurrencyRatesFromECB() {

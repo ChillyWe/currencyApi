@@ -11,18 +11,16 @@ import bg.dr.chilly.currencyApi.service.CurrencyRateService;
 import bg.dr.chilly.currencyApi.service.ECBService;
 import bg.dr.chilly.currencyApi.service.FixerIoService;
 import bg.dr.chilly.currencyApi.service.mapper.CurrencyRateMapper;
-
+import bg.dr.chilly.currencyApi.util.CurrencyRateExcelReportWriter;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Optional;
-
-import bg.dr.chilly.currencyApi.util.CurrencyRateExcelReportWriter;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -34,16 +32,12 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE)
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class RatesApiDelegateImpl implements RatesApiDelegate {
 
-  @Autowired
   ECBService ecbService;
-  @Autowired
   FixerIoService fixerIoService;
-  @Autowired
   CurrencyRateService currencyRateService;
-  @Autowired
   CurrencyRateMapper currencyRateMapper;
 
   /**
@@ -124,7 +118,7 @@ public class RatesApiDelegateImpl implements RatesApiDelegate {
                 currencyRateDTO.getRate(), currencyRateDTO.getReverseRate() != null ? Optional
                     .of(currencyRateDTO.getReverseRate()) : Optional.empty(),
                 SourceEnum.valueOf(currencyRateDTO.getSource()),
-                currencyRateDTO.getSourceCreatedOn())));
+                OffsetDateTime.parse(currencyRateDTO.getSourceCreatedOn()))));
   }
 
   /**
