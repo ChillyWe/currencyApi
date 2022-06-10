@@ -23,7 +23,6 @@ public class BeanUtils {
   public XmlMapper xmlMapper() {
     XmlMapper xmlMapper = new XmlMapper();
     xmlMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-    // xmlMapper.setDefaultUseWrapper(false);
     return xmlMapper;
   }
 
