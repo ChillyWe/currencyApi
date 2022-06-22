@@ -41,7 +41,7 @@ public class CurrencyRateEntity {
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "currency_quote_name_id")
-  CurrencyQuoteNameEntity quote;
+  bg.dr.chilly.currencyApi.db.model.CurrencyQuoteNameEntity quote;
 
   @Column(precision = 33, scale = 18)
   BigDecimal rate;
