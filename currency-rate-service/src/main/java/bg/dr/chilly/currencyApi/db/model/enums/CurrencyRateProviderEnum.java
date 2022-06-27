@@ -7,13 +7,13 @@ import lombok.experimental.FieldDefaults;
 
 @Getter
 @AllArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE)
-public enum SourceEnum {
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+public enum CurrencyRateProviderEnum {
 
   ECB("European Central Bank"),
   FIXER_IO("Fixer API"),
   CUSTOM("Custom");
 
-  final String name;
+  String name;
 
 }

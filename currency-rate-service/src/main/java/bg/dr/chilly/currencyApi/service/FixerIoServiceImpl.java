@@ -1,11 +1,21 @@
 package bg.dr.chilly.currencyApi.service;
 
+import static bg.dr.chilly.currencyApi.util.Constants.ACCESS_KEY_STRING_FORMAT;
+import static bg.dr.chilly.currencyApi.util.Constants.FIXER_IO_LATEST_PREFIX;
+import static bg.dr.chilly.currencyApi.util.Constants.FIXER_IO_SYMBOLS_PREFIX;
+
 import bg.dr.chilly.currencyApi.db.model.CurrencyQuoteNameEntity;
 import bg.dr.chilly.currencyApi.db.model.CurrencyRateEntity;
-import bg.dr.chilly.currencyApi.db.model.enums.SourceEnum;
+import bg.dr.chilly.currencyApi.db.model.enums.CurrencyRateProviderEnum;
 import bg.dr.chilly.currencyApi.service.model.FixerIOLatestRatesResponse;
 import bg.dr.chilly.currencyApi.service.model.FixerIONamesResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.math.BigDecimal;
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -17,15 +27,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-
-import java.math.BigDecimal;
-import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-
-import static bg.dr.chilly.currencyApi.util.Constants.*;
 
 @Slf4j
 @Service
@@ -72,7 +73,7 @@ public class FixerIoServiceImpl implements FixerIoService {
                 quoteNameOptional.ifPresent(currencyQuoteNameEntity -> entitiesToBeSaved.add(
                     currencyRateService
                         .createCustomCurrencyRate(base, BigDecimal.valueOf(kvp.getValue()),
-                            SourceEnum.FIXER_IO, Optional.of(Instant.ofEpochSecond(timestamp)),
+                            CurrencyRateProviderEnum.FIXER_IO, Optional.of(Instant.ofEpochSecond(timestamp)),
                             currencyQuoteNameEntity)));
             });
             currencyRateService.saveCurrencyRateEntities(entitiesToBeSaved);

@@ -10,10 +10,10 @@
   </parent>
 
 <!--  <packaging>jar</packaging>-->
-  <artifactId>currencyRateService</artifactId>
+  <artifactId>currency-rate-service</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <name>currencyRateService</name>
-  <description>Demo project with Spring Boot</description>
+  <description>Currency rate service</description>
 
   <dependencies>
     <!-- 		OpenApi -->
@@ -56,6 +56,11 @@
       <groupId>org.mapstruct</groupId>
       <artifactId>mapstruct-processor</artifactId>
     </dependency>
+    <!-- 		Flyway -->
+    <dependency>
+      <groupId>org.flywaydb</groupId>
+      <artifactId>flyway-core</artifactId>
+    </dependency>
     <!--      Apache POI -->
     <dependency>
       <groupId>org.apache.poi</groupId>
@@ -84,6 +89,12 @@
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-data-jpa</artifactId>
+    </dependency>
+    <!--     Mysql connector-->
+    <dependency>
+      <groupId>mysql</groupId>
+      <artifactId>mysql-connector-java</artifactId>
+      <version>8.0.29</version>
     </dependency>
 
     <!--      Jupiter -->
@@ -120,7 +131,7 @@
           </execution>
         </executions>
         <configuration>
-          <mainClass>src/main/java/bg/dr/chilly/currencyApi/CurrencyApiApplication.java</mainClass>
+          <mainClass>src/main/java/bg/dr/chilly/currencyApi/CurrencyRateApplication.java</mainClass>
           <excludes>
             <exclude>
               <groupId>org.projectlombok</groupId>

@@ -2,7 +2,7 @@ package bg.dr.chilly.currencyApi;
 
 import bg.dr.chilly.currencyApi.db.model.CurrencyQuoteNameEntity;
 import bg.dr.chilly.currencyApi.db.model.CurrencyRateEntity;
-import bg.dr.chilly.currencyApi.db.model.enums.SourceEnum;
+import bg.dr.chilly.currencyApi.db.model.enums.CurrencyRateProviderEnum;
 import bg.dr.chilly.currencyApi.db.projection.CurrencyQuoteNameView;
 import bg.dr.chilly.currencyApi.db.projection.CurrencyRateView;
 import bg.dr.chilly.currencyApi.util.Constants;
@@ -22,8 +22,8 @@ public class CurrencyRateTestDataFactory {
         .quote(getCurrencyQuoteNameEntity())
         .rate(BigDecimal.ONE)
         .reverseRate(BigDecimal.ONE)
-        .source(SourceEnum.CUSTOM)
-        .sourceCreatedOn(Instant.ofEpochSecond(3))
+        .currencyRateProvider(CurrencyRateProviderEnum.CUSTOM)
+        .providerCreatedOn(Instant.ofEpochSecond(3))
         .build();
   }
 
@@ -74,8 +74,8 @@ public class CurrencyRateTestDataFactory {
       }
 
       @Override
-      public SourceEnum getSource() {
-        return SourceEnum.CUSTOM;
+      public CurrencyRateProviderEnum getSource() {
+        return CurrencyRateProviderEnum.CUSTOM;
       }
 
       @Override

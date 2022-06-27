@@ -1,6 +1,6 @@
 package bg.dr.chilly.currencyApi.db.model;
 
-import bg.dr.chilly.currencyApi.db.model.enums.SourceEnum;
+import bg.dr.chilly.currencyApi.db.model.enums.CurrencyRateProviderEnum;
 import java.math.BigDecimal;
 import java.time.Instant;
 import javax.persistence.*;
@@ -41,7 +41,7 @@ public class CurrencyRateEntity {
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "currency_quote_name_id")
-  bg.dr.chilly.currencyApi.db.model.CurrencyQuoteNameEntity quote;
+  CurrencyQuoteNameEntity quote;
 
   @Column(precision = 33, scale = 18)
   BigDecimal rate;
@@ -49,12 +49,13 @@ public class CurrencyRateEntity {
   @Column(name = "reverse_rate", precision = 33, scale = 18)
   BigDecimal reverseRate;
 
-  @Column(length = 50)
+  // TODO: 6/27/22 create entity instead of enum
   @Enumerated(EnumType.STRING)
-  SourceEnum source;
+  @Column(name = "currency_rate_provider_id", length = 50)
+  CurrencyRateProviderEnum currencyRateProvider;
 
-  @Column(name = "source_created_on")
-  Instant sourceCreatedOn;
+  @Column(name = "provider_created_on")
+  Instant providerCreatedOn;
 
   @Version
   int version;

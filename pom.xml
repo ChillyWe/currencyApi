@@ -14,7 +14,7 @@
   <artifactId>currencyApi</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <name>currencyApi</name>
-  <description>Currency rates service</description>
+  <description>Currency rates application</description>
 
   <properties>
     <java.version>16</java.version>
@@ -32,6 +32,7 @@
 
   <modules>
     <module>currency-rate-service</module>
+    <module>currency-rate-provider</module>
   </modules>
 
   <dependencyManagement>
@@ -52,11 +53,6 @@
         <artifactId>spring-boot-devtools</artifactId>
         <scope>runtime</scope>
         <optional>true</optional>
-      </dependency>
-      <dependency>
-        <groupId>org.mariadb.jdbc</groupId>
-        <artifactId>mariadb-java-client</artifactId>
-        <scope>runtime</scope>
       </dependency>
       <!--		MySQL Connector-J-->
       <dependency>
@@ -79,6 +75,7 @@
       <dependency>
         <groupId>org.flywaydb</groupId>
         <artifactId>flyway-core</artifactId>
+        <version>${flyway.version}</version>
       </dependency>
       <!-- 		Jackson -->
       <dependency>

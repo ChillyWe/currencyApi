@@ -4,7 +4,7 @@ import static bg.dr.chilly.currencyApi.util.Constants.BASE_EUR;
 
 import bg.dr.chilly.currencyApi.db.model.CurrencyQuoteNameEntity;
 import bg.dr.chilly.currencyApi.db.model.CurrencyRateEntity;
-import bg.dr.chilly.currencyApi.db.model.enums.SourceEnum;
+import bg.dr.chilly.currencyApi.db.model.enums.CurrencyRateProviderEnum;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
@@ -95,7 +95,7 @@ public class ECBServiceImpl implements ECBService {
         }
         //creating Currency Rate Entity for European Central Bank
         CurrencyRateEntity created = currencyRateService
-            .createCustomCurrencyRate(BASE_EUR, new BigDecimal(rate), SourceEnum.ECB,
+            .createCustomCurrencyRate(BASE_EUR, new BigDecimal(rate), CurrencyRateProviderEnum.ECB,
                 Optional.of(Instant.ofEpochSecond(
                     //we are saving LocalTime.NOON.plus(4), because ECB update rates at 16:00 UTC
                     LocalDate.parse(time).toEpochSecond(LocalTime.NOON.plusHours(4), ZoneOffset.UTC))),

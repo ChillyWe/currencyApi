@@ -1,31 +1,31 @@
 package bg.dr.chilly.currencyApi.service;
 
-import bg.dr.chilly.currencyApi.db.model.enums.SourceEnum;
-import bg.dr.chilly.currencyApi.db.repository.CurrencyQuoteNameRepository;
-import bg.dr.chilly.currencyApi.db.repository.CurrencyRateRepository;
+import static bg.dr.chilly.currencyApi.db.model.enums.CurrencyRateProviderEnum.CUSTOM;
+import static bg.dr.chilly.currencyApi.exceptions.enums.CurrencyRateExceptionEnum.CS_001;
+import static bg.dr.chilly.currencyApi.exceptions.enums.CurrencyRateExceptionEnum.CS_002;
+import static bg.dr.chilly.currencyApi.exceptions.enums.CurrencyRateExceptionEnum.CS_003;
+import static bg.dr.chilly.currencyApi.util.Constants.DEFAULT_AMOUNT;
+
 import bg.dr.chilly.currencyApi.db.model.CurrencyQuoteNameEntity;
 import bg.dr.chilly.currencyApi.db.model.CurrencyRateEntity;
+import bg.dr.chilly.currencyApi.db.model.enums.CurrencyRateProviderEnum;
 import bg.dr.chilly.currencyApi.db.projection.CurrencyRateView;
-
+import bg.dr.chilly.currencyApi.db.repository.CurrencyQuoteNameRepository;
+import bg.dr.chilly.currencyApi.db.repository.CurrencyRateRepository;
 import bg.dr.chilly.currencyApi.exceptions.CurrencyRateException;
 import bg.dr.chilly.currencyApi.exceptions.enums.CurrencyRateExceptionEnum;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.time.*;
-import java.util.*;
-
+import java.time.Instant;
+import java.time.OffsetDateTime;
+import java.util.List;
+import java.util.Optional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import static bg.dr.chilly.currencyApi.db.model.enums.SourceEnum.CUSTOM;
-import static bg.dr.chilly.currencyApi.exceptions.enums.CurrencyRateExceptionEnum.CS_001;
-import static bg.dr.chilly.currencyApi.exceptions.enums.CurrencyRateExceptionEnum.CS_002;
-import static bg.dr.chilly.currencyApi.exceptions.enums.CurrencyRateExceptionEnum.CS_003;
-import static bg.dr.chilly.currencyApi.util.Constants.*;
 
 @Slf4j
 @Service
@@ -49,7 +49,7 @@ public class CurrencyRateServiceImpl implements CurrencyRateService {
     Optional<CurrencyQuoteNameEntity> optional =
         currencyQuoteNameRepository.findById(entity.getId());
     if (optional.isEmpty()) {
-      return currencyQuoteNameRepository.saveAndFlush(entity).getId();
+      return currencyQuoteNameRepository.save(entity).getId();
     }
     throw createCurrencyRateException(CS_001);
   }
@@ -58,7 +58,7 @@ public class CurrencyRateServiceImpl implements CurrencyRateService {
   @Transactional
   public String saveCurrencyRateEntities(List<CurrencyRateEntity> entities) {
 
-    List<CurrencyRateEntity> savedEntities = currencyRateRepository.saveAllAndFlush(entities);
+    List<CurrencyRateEntity> savedEntities = currencyRateRepository.saveAll(entities);
     if (!savedEntities.isEmpty()) {
       return "Entities was saved! ";
     }
@@ -81,7 +81,7 @@ public class CurrencyRateServiceImpl implements CurrencyRateService {
     if (currencyQuoteNameEntityOptional.isPresent()) {
       CurrencyRateEntity currencyRateEntity = createCustomCurrencyRate(base, rate, CUSTOM,
           Optional.of(Instant.now()), currencyQuoteNameEntityOptional.get());
-      currencyRateRepository.saveAndFlush(currencyRateEntity);
+      currencyRateRepository.save(currencyRateEntity);
       return "Currency rate with id : " + currencyRateEntity.getId() + " was created! ";
     }
     log.warn("Currency quote with id: " + currencyQuoteId + " not found! ");
@@ -103,7 +103,7 @@ public class CurrencyRateServiceImpl implements CurrencyRateService {
   @Override
   @Transactional
   public CurrencyRateEntity updateCurrencyRateById(Long currencyRateId, String base, BigDecimal rate,
-      Optional<BigDecimal> reverseRate, SourceEnum source, OffsetDateTime sourceCreatedOn) {
+      Optional<BigDecimal> reverseRate, CurrencyRateProviderEnum currencyRateProvider, OffsetDateTime providerCreatedOn) {
 
     Optional<CurrencyRateEntity> currencyRateEntityOptional =
         currencyRateRepository.findById(currencyRateId);
@@ -114,8 +114,8 @@ public class CurrencyRateServiceImpl implements CurrencyRateService {
       entity.setRate(rate);
       entity.setReverseRate(
           reverseRate.orElse(DEFAULT_AMOUNT.divide(rate, 18, RoundingMode.HALF_DOWN)));
-      entity.setSource(source);
-      entity.setSourceCreatedOn(sourceCreatedOn.toInstant());
+      entity.setCurrencyRateProvider(currencyRateProvider);
+      entity.setProviderCreatedOn(providerCreatedOn.toInstant());
       return currencyRateRepository.save(entity);
     }
     log.warn("Currency rate with id: " + currencyRateId + " not found! ");
@@ -133,7 +133,7 @@ public class CurrencyRateServiceImpl implements CurrencyRateService {
       CurrencyQuoteNameEntity currencyQuoteNameEntity = currencyRateEntity.getQuote();
       currencyQuoteNameEntity.setName(quoteName);
       currencyQuoteNameEntity.setUpdatedOn(Instant.now());
-      return currencyQuoteNameRepository.saveAndFlush(currencyQuoteNameEntity);
+      return currencyQuoteNameRepository.save(currencyQuoteNameEntity);
     }
     log.warn("Currency rate with id: " + rateId + " not found! ");
     throw createCurrencyRateException(CS_003);
@@ -155,15 +155,15 @@ public class CurrencyRateServiceImpl implements CurrencyRateService {
 
   @Override
   public CurrencyRateEntity createCustomCurrencyRate(String base, BigDecimal rate,
-      SourceEnum source, Optional<Instant> sourceCreatedOn, CurrencyQuoteNameEntity quoteName) {
+      CurrencyRateProviderEnum currencyRateProvider, Optional<Instant> providerCreatedOn, CurrencyQuoteNameEntity quoteName) {
     return CurrencyRateEntity.builder()
         .createdOn(Instant.now())
         .updatedOn(Instant.now())
         .base(base)
         .rate(rate)
         .reverseRate(DEFAULT_AMOUNT.divide(rate, 18, RoundingMode.HALF_DOWN))
-        .source(source)
-        .sourceCreatedOn(sourceCreatedOn.orElse(null))
+        .currencyRateProvider(currencyRateProvider)
+        .providerCreatedOn(providerCreatedOn.orElse(null))
         .quote(quoteName).build();
   }
 

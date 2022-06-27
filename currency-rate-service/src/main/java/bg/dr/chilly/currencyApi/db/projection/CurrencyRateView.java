@@ -1,6 +1,6 @@
 package bg.dr.chilly.currencyApi.db.projection;
 
-import bg.dr.chilly.currencyApi.db.model.enums.SourceEnum;
+import bg.dr.chilly.currencyApi.db.model.enums.CurrencyRateProviderEnum;
 import java.math.BigDecimal;
 import java.time.Instant;
 
@@ -20,7 +20,7 @@ public interface CurrencyRateView {
 
   BigDecimal getReverseRate();
 
-  SourceEnum getSource();
+  CurrencyRateProviderEnum getSource();
 
   Instant getSourceCreatedOn();
 

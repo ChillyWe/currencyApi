@@ -6,7 +6,7 @@ import bg.dr.chilly.currencyApi.api.model.CreateCurrencyQuoteNameDTO;
 import bg.dr.chilly.currencyApi.api.model.CreateCurrencyRateDTO;
 import bg.dr.chilly.currencyApi.api.model.CurrencyQuoteNameDTO;
 import bg.dr.chilly.currencyApi.api.model.CurrencyRateDTO;
-import bg.dr.chilly.currencyApi.db.model.enums.SourceEnum;
+import bg.dr.chilly.currencyApi.db.model.enums.CurrencyRateProviderEnum;
 import bg.dr.chilly.currencyApi.service.CurrencyRateService;
 import bg.dr.chilly.currencyApi.service.ECBService;
 import bg.dr.chilly.currencyApi.service.FixerIoService;
@@ -117,7 +117,7 @@ public class RatesApiDelegateImpl implements RatesApiDelegate {
             .updateCurrencyRateById(rateId, currencyRateDTO.getBase(),
                 currencyRateDTO.getRate(), currencyRateDTO.getReverseRate() != null ? Optional
                     .of(currencyRateDTO.getReverseRate()) : Optional.empty(),
-                SourceEnum.valueOf(currencyRateDTO.getSource()),
+                CurrencyRateProviderEnum.valueOf(currencyRateDTO.getSource()),
                 OffsetDateTime.parse(currencyRateDTO.getSourceCreatedOn()))));
   }
 
