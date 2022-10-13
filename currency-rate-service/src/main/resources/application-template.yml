@@ -1,0 +1,37 @@
+server:
+  port: 8081  #--> define port
+  servlet:
+    context-path: /currency
+
+spring:
+  application:
+    name: currency-service
+  datasource:
+    url: jdbc:mysql://localhost:{databasePort}}/currencies_db?useSSL=false&createDatabaseIfNotExist=true&useUnicode=yes&characterEncoding=UTF-8&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC
+    username: databaseRootUser  #-->
+    password: databaseRootUserPassword  #-->
+    driver-class-name: com.mysql.cj.jdbc.Driver
+# JPA
+  jpa:
+    properties:
+      ddl-auto: none
+      hibernate:
+        dialect: org.hibernate.dialect.MariaDBDialect
+        format_sql: "TRUE"
+    show-sql: true
+# Flyway
+  flyway:
+    user: flywayUser  #-->
+    password: flywayUserPassword  #-->
+    url: jdbc:mysql://localhost:{databasePort}/currencies_db
+## Quartz
+#  quartz:
+#    job-store-type: jdbc
+
+ecb:
+  base:
+    url: https://www.ecb.europa.eu/stats/eurofxref/eurofxref-daily.xml
+
+logging:
+  level:
+    org: INFO
