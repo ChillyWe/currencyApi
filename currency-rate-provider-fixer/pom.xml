@@ -10,26 +10,24 @@
     <version>0.0.1-SNAPSHOT</version>
   </parent>
 
-  <artifactId>currency-rate-provider</artifactId>
+  <artifactId>currency-rate-provider-fixer</artifactId>
   <packaging>jar</packaging>
 
   <dependencies>
-
+    <!--    intra project dependencies-->
+    <dependency>
+      <groupId>bg.dr.chilly</groupId>
+      <artifactId>currency-rate-provider</artifactId>
+    </dependency>
+    <!--    Spring dependencies-->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-web</artifactId>
+    </dependency>
+    <!--		Lombok-->
     <dependency>
       <groupId>org.projectlombok</groupId>
       <artifactId>lombok</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-context</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>jakarta.annotation</groupId>
-      <artifactId>jakarta.annotation-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-web</artifactId>
     </dependency>
 
   </dependencies>

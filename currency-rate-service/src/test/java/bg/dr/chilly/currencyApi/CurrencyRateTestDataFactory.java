@@ -1,11 +1,11 @@
 package bg.dr.chilly.currencyApi;
 
-import bg.dr.chilly.currencyApi.db.model.CurrencyQuoteNameEntity;
-import bg.dr.chilly.currencyApi.db.model.CurrencyRateEntity;
-import bg.dr.chilly.currencyApi.db.model.enums.CurrencyRateProviderEnum;
-import bg.dr.chilly.currencyApi.db.projection.CurrencyQuoteNameView;
-import bg.dr.chilly.currencyApi.db.projection.CurrencyRateView;
-import bg.dr.chilly.currencyApi.util.Constants;
+import bg.dr.chilly.currency.service.db.model.CurrencyQuoteNameEntity;
+import bg.dr.chilly.currency.service.db.model.CurrencyRateEntity;
+import bg.dr.chilly.currency.service.db.model.enums.CurrencyRateProviderEnum;
+import bg.dr.chilly.currency.service.db.projection.CurrencyQuoteNameView;
+import bg.dr.chilly.currency.service.db.projection.CurrencyRateView;
+import bg.dr.chilly.currency.provider.util.Constants;
 import java.math.BigDecimal;
 import java.time.Instant;
 
@@ -74,12 +74,12 @@ public class CurrencyRateTestDataFactory {
       }
 
       @Override
-      public CurrencyRateProviderEnum getSource() {
+      public CurrencyRateProviderEnum getCurrencyRateProvider() {
         return CurrencyRateProviderEnum.CUSTOM;
       }
 
       @Override
-      public Instant getSourceCreatedOn() {
+      public Instant getProviderCreatedOn() {
         return Instant.ofEpochSecond(3);
       }
     };

@@ -3,19 +3,47 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
+
   <parent>
     <groupId>bg.dr.chilly</groupId>
     <artifactId>currencyApi</artifactId>
     <version>0.0.1-SNAPSHOT</version>
   </parent>
 
-<!--  <packaging>jar</packaging>-->
   <artifactId>currency-rate-service</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
-  <name>currencyRateService</name>
-  <description>Currency rate service</description>
 
   <dependencies>
+    <!--    intra project dependencies-->
+    <dependency>
+      <groupId>bg.dr.chilly</groupId>
+      <artifactId>currency-rate-provider</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>currency-rate-provider-ecb</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>currency-rate-provider-fixer</artifactId>
+    </dependency>
+    <!--    Spring dependencies-->
+
+    <!-- https://mvnrepository.com/artifact/org.springframework/spring-webmvc -->
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-webmvc</artifactId>
+      <version>5.3.21</version>
+    </dependency>
+
+
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-web</artifactId>
+    </dependency>
     <!-- 		OpenApi -->
     <dependency>
       <groupId>org.springdoc</groupId>
@@ -31,14 +59,11 @@
       <artifactId>jackson-databind-nullable</artifactId>
     </dependency>
     <dependency>
-      <groupId>com.fasterxml.jackson.dataformat</groupId>
-      <artifactId>jackson-dataformat-xml</artifactId>
-    </dependency>
-    <dependency>
       <groupId>com.fasterxml.jackson.datatype</groupId>
       <artifactId>jackson-datatype-jsr310</artifactId>
     </dependency>
     <!--		Swagger	-->
+    <!--  TODO   https://springdoc.org/migrating-from-springfox.html-->
     <dependency>
       <groupId>io.springfox</groupId>
       <artifactId>springfox-swagger2</artifactId>
@@ -71,20 +96,15 @@
       <artifactId>poi-ooxml</artifactId>
     </dependency>
     <!--      Quartz -->
-<!--    <dependency>-->
-<!--      <groupId>org.quartz-scheduler</groupId>-->
-<!--      <artifactId>quartz</artifactId>-->
-<!--      <version>2.3.2</version>-->
-<!--    </dependency>-->
+    <!--    <dependency>-->
+    <!--      <groupId>org.quartz-scheduler</groupId>-->
+    <!--      <artifactId>quartz</artifactId>-->
+    <!--      <version>2.3.2</version>-->
+    <!--    </dependency>-->
     <!--		Lombok-->
     <dependency>
       <groupId>org.projectlombok</groupId>
       <artifactId>lombok</artifactId>
-      <optional>true</optional>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-web</artifactId>
     </dependency>
     <dependency>
       <groupId>org.springframework.boot</groupId>
@@ -94,9 +114,7 @@
     <dependency>
       <groupId>mysql</groupId>
       <artifactId>mysql-connector-java</artifactId>
-      <version>8.0.29</version>
     </dependency>
-
     <!--      Jupiter -->
     <dependency>
       <groupId>org.junit.jupiter</groupId>
@@ -112,8 +130,6 @@
     <dependency>
       <groupId>org.mockito</groupId>
       <artifactId>mockito-junit-jupiter</artifactId>
-<!--      <version>4.6.1</version>-->
-<!--      <scope>test</scope>-->
     </dependency>
 
   </dependencies>
@@ -123,15 +139,8 @@
       <plugin>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
-        <executions>
-          <execution>
-            <goals>
-              <goal>repackage</goal>
-            </goals>
-          </execution>
-        </executions>
         <configuration>
-          <mainClass>src/main/java/bg/dr/chilly/currencyApi/CurrencyRateApplication.java</mainClass>
+          <mainClass>src/main/java/bg/dr/chilly/currency/service/CurrencyRateApplication.java</mainClass>
           <excludes>
             <exclude>
               <groupId>org.projectlombok</groupId>
@@ -144,7 +153,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.8.1</version>
         <configuration>
           <source>${java.version}</source>
           <target>${java.version}</target>
@@ -167,7 +175,6 @@
       <plugin>
         <groupId>org.openapitools</groupId>
         <artifactId>openapi-generator-maven-plugin</artifactId>
-        <version>${openapi.generator.maven.plugin}</version>
         <executions>
           <execution>
             <goals>
@@ -176,13 +183,13 @@
             <configuration>
               <inputSpec>${project.basedir}/..//spec/currency-service.yaml</inputSpec>
               <generatorName>spring</generatorName>
-              <apiPackage>bg.dr.chilly.currencyApi.api</apiPackage>
-              <modelPackage>bg.dr.chilly.currencyApi.api.model</modelPackage>
+              <apiPackage>bg.dr.chilly.currency.service.api</apiPackage>
+              <modelPackage>bg.dr.chilly.currency.service.api.model</modelPackage>
               <modelNameSuffix>DTO</modelNameSuffix>
               <output>${project.build.directory}/generated-sources</output>
               <configOptions>
-                <basePackage>bg.dr.chilly.currencyApi</basePackage>
-                <configPackage>bg.dr.chilly.currencyApi.config</configPackage>
+                <basePackage>bg.dr.chilly.currency.service</basePackage>
+                <configPackage>bg.dr.chilly.currency.service.config</configPackage>
                 <sourceFolder>src/gen/java/main</sourceFolder>
                 <delegatePattern>true</delegatePattern>
                 <fork>false</fork>

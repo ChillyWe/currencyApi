@@ -1,4 +1,5 @@
 openapi: 3.0.2
+
 info:
   title: Currency API
   description: Api Documentation
@@ -10,10 +11,10 @@ info:
   version: '0.0.1-SNAPSHOT'
 
 servers:
-  - url: //127.0.0.1:8081
+  - url: //127.0.0.1:8081/api/v1/currency-rate
 tags:
   - name: currencyRateApi
-    description: Currency Rate Controler
+    description: Currency Rate Controller
 
 paths:
   /rates:
@@ -79,36 +80,36 @@ paths:
           description: Not found
         default:
           description: Unexpected error
-  /rates/update-fixer:
-    post:
-      summary: Get latest update from fixer.io api
-      tags:
-        - currencyRateApi
-      operationId: updateCurrencyRates
-      responses:
-        200:
-          description: OK
-          content:
-            text/plain:
-              schema:
-                type: string
-        default:
-          description: Unexpected error
-  /rates/update-ecb:
-    post:
-      summary: Get latest update from European Central Bank
-      tags:
-        - currencyRateApi
-      operationId: updateCurrencyRatesFromECB
-      responses:
-        200:
-          description: OK
-          content:
-            text/plain:
-              schema:
-                type: string
-        default:
-          description: Unexpected error
+#  /rates/update-fixer:
+#    post:
+#      summary: Get latest update from fixer.io api
+#      tags:
+#        - currencyRateApi
+#      operationId: updateCurrencyRates
+#      responses:
+#        200:
+#          description: OK
+#          content:
+#            text/plain:
+#              schema:
+#                type: string
+#        default:
+#          description: Unexpected error
+#  /rates/update-ecb:
+#    post:
+#      summary: Get latest update from European Central Bank
+#      tags:
+#        - currencyRateApi
+#      operationId: updateCurrencyRatesFromECB
+#      responses:
+#        200:
+#          description: OK
+#          content:
+#            text/plain:
+#              schema:
+#                type: string
+#        default:
+#          description: Unexpected error
   /rates/{rateId}:
     get:
       summary: Get currency rate for given Id
@@ -216,23 +217,23 @@ paths:
           description: Bad data
         default:
           description: Unexpected error
-  /rates/quote-name/update-fixer:
-    post:
-      summary: Update currency quote names from fixer.io
-      tags:
-        - currencyRateApi
-      operationId: updateCurrencyQuoteNameFromFixer
-      responses:
-        200:
-          description: Created
-          content:
-            text/plain:
-              schema:
-                type: string
-        400:
-          description: Bad data
-        default:
-          description: Unexpected error
+#  /rates/quote-name/update-fixer:
+#    post:
+#      summary: Update currency quote names from fixer.io
+#      tags:
+#        - currencyRateApi
+#      operationId: updateCurrencyQuoteNameFromFixer
+#      responses:
+#        200:
+#          description: Created
+#          content:
+#            text/plain:
+#              schema:
+#                type: string
+#        400:
+#          description: Bad data
+#        default:
+#          description: Unexpected error
   /rates/{rateId}/quote-name:
     get:
       summary: Get currency rate quote name for given Id
@@ -316,9 +317,9 @@ components:
           type: number
         reverseRate:
           type: number
-        source:
+        currencyRateProvider:
           type: string
-        sourceCreatedOn:
+        providerCreatedOn:
           type: string
           format: 'yyyy-mm-dd'
       required:

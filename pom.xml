@@ -3,23 +3,27 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <packaging>pom</packaging>
+
   <parent>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-parent</artifactId>
     <version>2.5.6</version>
     <relativePath/> <!-- lookup parent from repository -->
   </parent>
+
   <groupId>bg.dr.chilly</groupId>
   <artifactId>currencyApi</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <name>currencyApi</name>
+  <packaging>pom</packaging>
   <description>Currency rates application</description>
 
   <properties>
     <java.version>16</java.version>
+    <spring.boot.starter.parent.version>2.5.6</spring.boot.starter.parent.version>
     <maven.compiler.source>16</maven.compiler.source>
     <maven.compiler.target>16</maven.compiler.target>
+    <mysql.connector.version>8.0.30</mysql.connector.version>
     <jackson.version>2.12.5</jackson.version>
     <jackson.databind.version>0.2.2</jackson.databind.version>
     <flyway.version>8.1.0</flyway.version>
@@ -28,11 +32,16 @@
     <mapstruct.version>1.4.2.Final</mapstruct.version>
     <apache.poi.version>5.0.0</apache.poi.version>
     <openapi.generator.maven.plugin>5.1.0</openapi.generator.maven.plugin>
+    <maven-compiler-plugin>3.10.1</maven-compiler-plugin>
+    <junit.jupiter.version>5.8.2</junit.jupiter.version>
+    <mockito.all.version>2.0.2-beta</mockito.all.version>
   </properties>
 
   <modules>
     <module>currency-rate-service</module>
     <module>currency-rate-provider</module>
+    <module>currency-rate-provider-ecb</module>
+    <module>currency-rate-provider-fixer</module>
   </modules>
 
   <dependencyManagement>
@@ -40,31 +49,53 @@
       <!--    intra project dependencies-->
       <dependency>
         <groupId>${project.groupId}</groupId>
-        <artifactId>currencyRateService</artifactId>
+        <artifactId>currency-rate-service</artifactId>
         <version>${project.version}</version>
       </dependency>
-
-      <!--    <dependency>-->
-      <!--      <groupId>org.springframework.boot</groupId>-->
-      <!--      <artifactId>spring-boot-starter-security</artifactId>-->
-      <!--    </dependency>-->
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>currency-rate-provider</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>currency-rate-provider-ecb</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>currency-rate-provider-fixer</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <!--    Spring dependencies-->
+      <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter</artifactId>
+        <version>${spring.boot.starter.parent.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-web</artifactId>
+        <version>${spring.boot.starter.parent.version}</version>
+      </dependency>
       <dependency>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-devtools</artifactId>
         <scope>runtime</scope>
         <optional>true</optional>
       </dependency>
+      <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-configuration-processor</artifactId>
+        <version>${spring.boot.starter.parent.version}</version>
+        <optional>true</optional>
+      </dependency>
       <!--		MySQL Connector-J-->
       <dependency>
         <groupId>mysql</groupId>
         <artifactId>mysql-connector-java</artifactId>
+        <version>${mysql.connector.version}</version>
       </dependency>
-      <!--    Thymeleaf-->
-      <dependency>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-thymeleaf</artifactId>
-      </dependency>
-
       <!-- 		OpenApi -->
       <dependency>
         <groupId>org.springdoc</groupId>
@@ -79,14 +110,14 @@
       </dependency>
       <!-- 		Jackson -->
       <dependency>
-        <groupId>com.fasterxml.jackson.core</groupId>
-        <artifactId>jackson-core</artifactId>
-        <version>${jackson.version}</version>
-      </dependency>
-      <dependency>
         <groupId>org.openapitools</groupId>
         <artifactId>jackson-databind-nullable</artifactId>
         <version>${jackson.databind.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-core</artifactId>
+        <version>${jackson.version}</version>
       </dependency>
       <dependency>
         <groupId>com.fasterxml.jackson.dataformat</groupId>
@@ -143,32 +174,55 @@
         <artifactId>spring-boot-starter-test</artifactId>
         <scope>test</scope>
       </dependency>
-      <dependency>
-        <groupId>org.springframework.security</groupId>
-        <artifactId>spring-security-test</artifactId>
-        <scope>test</scope>
-      </dependency>
       <!--      Jupiter -->
       <dependency>
         <groupId>org.junit.jupiter</groupId>
         <artifactId>junit-jupiter-api</artifactId>
-        <version>5.8.2</version>
+        <version>${junit.jupiter.version}</version>
       </dependency>
       <!--      Mockito -->
       <dependency>
         <groupId>org.mockito</groupId>
         <artifactId>mockito-all</artifactId>
-        <version>2.0.2-beta</version>
+        <version>${mockito.all.version}</version>
       </dependency>
       <!--      AssertJ -->
-<!--      <dependency>-->
-<!--        <groupId>org.assertj</groupId>-->
-<!--        <artifactId>assertj-core</artifactId>-->
-<!--        <version>3.23.1</version>-->
-<!--        <scope>test</scope>-->
-<!--      </dependency>-->
+      <!--      <dependency>-->
+      <!--        <groupId>org.assertj</groupId>-->
+      <!--        <artifactId>assertj-core</artifactId>-->
+      <!--        <version>3.23.1</version>-->
+      <!--        <scope>test</scope>-->
+      <!--      </dependency>-->
 
     </dependencies>
   </dependencyManagement>
+
+  <build>
+    <pluginManagement>
+
+      <plugins>
+        <plugin>
+          <groupId>org.springframework.boot</groupId>
+          <artifactId>spring-boot-maven-plugin</artifactId>
+          <configuration>
+            <classifier>exec</classifier>
+          </configuration>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <version>${maven-compiler-plugin}</version>
+        </plugin>
+
+        <plugin>
+          <groupId>org.openapitools</groupId>
+          <artifactId>openapi-generator-maven-plugin</artifactId>
+          <version>${openapi.generator.maven.plugin}</version>
+        </plugin>
+      </plugins>
+
+    </pluginManagement>
+  </build>
 
 </project>

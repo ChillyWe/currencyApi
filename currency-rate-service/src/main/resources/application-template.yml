@@ -28,12 +28,6 @@ spring:
 #  quartz:
 #    job-store-type: jdbc
 
-fixer:
-  base:
-    url: http://data.fixer.io/api
-  api:
-    key: {UUID} #-->
-
 ecb:
   base:
     url: https://www.ecb.europa.eu/stats/eurofxref/eurofxref-daily.xml
