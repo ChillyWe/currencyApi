@@ -1,12 +1,12 @@
 package bg.dr.chilly.currency.provider.fixer.connector;
 
 import static bg.dr.chilly.currency.provider.util.Constants.ACCESS_KEY_STRING_FORMAT;
-import static bg.dr.chilly.currency.provider.util.Constants.FIXER_IO_LATEST_PREFIX;
-import static bg.dr.chilly.currency.provider.util.Constants.FIXER_IO_SYMBOLS_PREFIX;
+import static bg.dr.chilly.currency.provider.util.Constants.FIXER_GET_LATEST_CURRENCY_RATES_PREFIX;
+import static bg.dr.chilly.currency.provider.util.Constants.FIXER_GET_QUOTE_TRANSLATION_NAMES_PREFIX;
 
 import bg.dr.chilly.currency.provider.fixer.config.FixerProperties;
 import bg.dr.chilly.currency.provider.fixer.model.FixerLatestRatesResponse;
-import bg.dr.chilly.currency.provider.fixer.model.FixerNamesResponse;
+import bg.dr.chilly.currency.provider.fixer.model.FixerCurrencyRateQuoteNamesResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -31,18 +31,8 @@ public class FixerConnectorImpl implements FixerConnector {
   @Override
   public FixerLatestRatesResponse getForUpdateCurrencyRates() {
 
-    return getFixerIOLatestResponse(
-        fixerConfig.getBaseUrl() + FIXER_IO_LATEST_PREFIX +
-            String.format(ACCESS_KEY_STRING_FORMAT, fixerConfig.getApiKey()));
-    // FixerIOLatestRatesResponse fixerResponse = null;
-    // try {
-    //   fixerResponse = objectMapper
-    //       .readValue(Paths.get("dev_help/currencyRates_20210607.json".toString()).toFile(),
-    //           FixerIOLatestRatesResponse.class);
-    //
-    // } catch (IOException e) {
-    //   e.printStackTrace();
-    // }
+    return getFixerIOLatestResponse(fixerConfig.getBaseUrl() + FIXER_GET_LATEST_CURRENCY_RATES_PREFIX +
+        String.format(ACCESS_KEY_STRING_FORMAT, fixerConfig.getApiKey()));
   }
 
   @SneakyThrows
@@ -61,18 +51,16 @@ public class FixerConnectorImpl implements FixerConnector {
   }
 
   @Override
-  public FixerNamesResponse getForUpdateCurrencyQuoteNames() {
-    FixerNamesResponse fixerNamesResponse = getFixerIONamesResponse(
-        fixerConfig.getBaseUrl() + FIXER_IO_SYMBOLS_PREFIX +
-            String.format(ACCESS_KEY_STRING_FORMAT, fixerConfig.getApiKey()));
+  public FixerCurrencyRateQuoteNamesResponse getForUpdateCurrencyQuoteNames() {
 
-    return fixerNamesResponse;
+    return getFixerIONamesResponse(fixerConfig.getBaseUrl() + FIXER_GET_QUOTE_TRANSLATION_NAMES_PREFIX +
+        String.format(ACCESS_KEY_STRING_FORMAT, fixerConfig.getApiKey()));
   }
 
-  private FixerNamesResponse getFixerIONamesResponse(String urlString) {
+  private FixerCurrencyRateQuoteNamesResponse getFixerIONamesResponse(String urlString) {
 
-    ResponseEntity<FixerNamesResponse> fixerIOQuoteNamesResponseResponse =
-        fixerRestTemplate.getForEntity(urlString, FixerNamesResponse.class);
+    ResponseEntity<FixerCurrencyRateQuoteNamesResponse> fixerIOQuoteNamesResponseResponse =
+        fixerRestTemplate.getForEntity(urlString, FixerCurrencyRateQuoteNamesResponse.class);
     if (HttpStatus.OK.equals(fixerIOQuoteNamesResponseResponse.getStatusCode())) {
       return fixerIOQuoteNamesResponseResponse.getBody();
     }

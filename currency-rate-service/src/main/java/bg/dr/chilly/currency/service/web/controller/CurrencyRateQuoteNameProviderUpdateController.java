@@ -1,7 +1,7 @@
 package bg.dr.chilly.currency.service.web.controller;
 
-import bg.dr.chilly.currency.service.service.model.CurrencyRateUpdateStatusData;
 import bg.dr.chilly.currency.service.service.CurrencyRateService;
+import bg.dr.chilly.currency.service.service.model.CurrencyRateQuoteNameUpdateStatusData;
 import javax.servlet.http.HttpServletRequest;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -15,27 +15,28 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(CurrencyRateProviderUpdateController.CURRENCY_RATE_UPDATE_PATH)
+@RequestMapping(CurrencyRateQuoteNameProviderUpdateController.CURRENCY_RATE_QUOTE_NAME_UPDATE_PATH)
 @Slf4j
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public class CurrencyRateProviderUpdateController {
+public class CurrencyRateQuoteNameProviderUpdateController {
 
-  public static final String CURRENCY_RATE_UPDATE_PATH = "/api/v1/currency-rate/update";
+  public static final String CURRENCY_RATE_QUOTE_NAME_UPDATE_PATH = "/api/v1/currency-rate-quote-name/update";
 
   CurrencyRateService currencyRateService;
 
   /**
-   * Provide a dynamic endpoint for all currency rate provider update method
+   * Provide a dynamic endpoint for update currency rate quote names for supported by provider currency rates
    */
   @RequestMapping(value = "/**", method = RequestMethod.POST)
   @SuppressWarnings("rawtypes")
   public ResponseEntity handleUpdate(HttpServletRequest request) {
 
     String path = request.getRequestURI();
-    String providerRestUrl = path.substring(CURRENCY_RATE_UPDATE_PATH.length() + 1);
+    String providerRestUrl = path.substring(CURRENCY_RATE_QUOTE_NAME_UPDATE_PATH.length() + 1);
 
-    CurrencyRateUpdateStatusData status = currencyRateService.handleCurrencyRateUpdate(providerRestUrl);
+    CurrencyRateQuoteNameUpdateStatusData status =
+        currencyRateService.handleCurrencyRateQuoteNameUpdate(providerRestUrl);
 
     return ResponseEntity.status(HttpStatus.OK)
         .contentType(MediaType.APPLICATION_JSON)

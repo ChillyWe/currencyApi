@@ -1,5 +1,6 @@
 package bg.dr.chilly.currency.service.service;
 
+import bg.dr.chilly.currency.service.service.model.CurrencyRateQuoteNameUpdateStatusData;
 import bg.dr.chilly.currency.service.service.model.CurrencyRateUpdateStatusData;
 import bg.dr.chilly.currency.service.db.model.CurrencyQuoteNameEntity;
 import bg.dr.chilly.currency.service.db.model.CurrencyRateEntity;
@@ -13,7 +14,9 @@ import java.util.Optional;
 
 public interface CurrencyRateService {
 
-  CurrencyRateUpdateStatusData handleUpdate(String providerWebhookUrl);
+  CurrencyRateUpdateStatusData handleCurrencyRateUpdate(String providerWebhookUrl);
+
+  CurrencyRateQuoteNameUpdateStatusData handleCurrencyRateQuoteNameUpdate(String providerUrl);
 
   Optional<CurrencyQuoteNameEntity> findCurrencyQuoteNameEntity(String id);
 

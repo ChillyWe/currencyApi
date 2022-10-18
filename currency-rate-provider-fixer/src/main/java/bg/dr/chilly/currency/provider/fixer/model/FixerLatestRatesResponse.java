@@ -14,10 +14,15 @@ import java.util.Map;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class FixerLatestRatesResponse {
 
+    // Returns true or false depending on whether your API request has succeeded.
     Boolean success;
+    // Returns the exact date and time (UNIX time stamp) the given rates were collected.
     Long timestamp;
+    // Returns the three-letter currency code of the base currency used for this request.
     String base;
+    // date object containing the date the given exchange rate data was collected
     LocalDate date;
+    // Returns exchange rate data for the currencies you have requested.
     Map<String, Double> rates = new HashMap<>();
 
 }

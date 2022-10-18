@@ -1,5 +1,6 @@
 package bg.dr.chilly.currency.service.service.mapper;
 
+import bg.dr.chilly.currency.provider.data.CurrencyRateQuoteNameUpdateDTO;
 import bg.dr.chilly.currency.provider.data.CurrencyRateUpdateDTO;
 import bg.dr.chilly.currency.provider.util.CurrencyRateTransferUtils;
 import bg.dr.chilly.currency.service.api.model.CurrencyQuoteNameDTO;
@@ -31,11 +32,19 @@ public interface CurrencyRateMapper {
   CurrencyRateEntity entityFromUpdateDto(CurrencyRateUpdateDTO source, CurrencyQuoteNameEntity currencyQuoteName);
   CurrencyQuoteNameDTO currencyQuoteNameViewToDto(CurrencyQuoteNameView source);
 
+  @Mapping(source = "code", target = "id")
+  @Mapping(target = "createdOn", expression = "java(java.time.Instant.now())")
+  @Mapping(target = "updatedOn", expression = "java(java.time.Instant.now())")
+  @Mapping(target = "version", ignore = true)
+  CurrencyQuoteNameEntity entityFromCurrencyRateQuoteUpdateNameDto(CurrencyRateQuoteNameUpdateDTO source);
+
   @Mapping(source = "source.quote", target = "quoteName")
   CurrencyRateDTO currencyRateEntityToDto(CurrencyRateEntity source);
 
   List<CurrencyRateDTO> currencyRateEntityToDtoList(List<CurrencyRateEntity> sources);
   CurrencyQuoteNameDTO currencyQuoteNameEntityToDto(CurrencyQuoteNameEntity source);
+
+  List<CurrencyQuoteNameDTO> currencyQuoteNameEntityToDtoToList(List<CurrencyQuoteNameEntity> sources);
 
   @Named("rateBigDecimalToString")
   default String extractStringFromBigDecimal(BigDecimal bigDecimal) {

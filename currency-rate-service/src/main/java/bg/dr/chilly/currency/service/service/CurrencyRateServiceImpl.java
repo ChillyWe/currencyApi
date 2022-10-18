@@ -2,6 +2,7 @@ package bg.dr.chilly.currency.service.service;
 
 import bg.dr.chilly.currency.provider.CurrencyRateProvider;
 import bg.dr.chilly.currency.provider.CurrencyRateProviderFactory;
+import bg.dr.chilly.currency.provider.data.CurrencyRateQuoteNameUpdateDTO;
 import bg.dr.chilly.currency.provider.data.CurrencyRateUpdateDTO;
 import bg.dr.chilly.currency.provider.util.Constants;
 import bg.dr.chilly.currency.service.db.model.CurrencyQuoteNameEntity;
@@ -13,6 +14,7 @@ import bg.dr.chilly.currency.service.db.repository.CurrencyRateRepository;
 import bg.dr.chilly.currency.service.exceptions.CurrencyRateException;
 import bg.dr.chilly.currency.service.exceptions.enums.CurrencyRateExceptionEnum;
 import bg.dr.chilly.currency.service.service.mapper.CurrencyRateMapper;
+import bg.dr.chilly.currency.service.service.model.CurrencyRateQuoteNameUpdateStatusData;
 import bg.dr.chilly.currency.service.service.model.CurrencyRateUpdateStatusData;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -41,7 +43,6 @@ import org.springframework.transaction.support.TransactionTemplate;
 public class CurrencyRateServiceImpl implements CurrencyRateService {
 
   CurrencyRateMapper currencyRateMapper;
-
   CurrencyRateRepository currencyRateRepository;
   PlatformTransactionManager transactionManager;
   CurrencyQuoteNameRepository currencyQuoteNameRepository;
@@ -50,7 +51,7 @@ public class CurrencyRateServiceImpl implements CurrencyRateService {
   // it is not wise to use @Transactional on the whole method because
   // currencyRateProvider.updateCurrencyRates use calls to external services which are slow
   @Override
-  public CurrencyRateUpdateStatusData handleUpdate(String providerUrl) {
+  public CurrencyRateUpdateStatusData handleCurrencyRateUpdate(String providerUrl) {
 
     if (currencyRateProviderFactory.getProviderIdFromRestEndpoint(providerUrl) != null) {
       CurrencyRateProvider currencyRateProvider = currencyRateProviderFactory
@@ -89,6 +90,63 @@ public class CurrencyRateServiceImpl implements CurrencyRateService {
           "No implementation of this currency rate provider or no provider ID "
               + "is associated with the provided endpoint: " + providerUrl;
       // TODO: 10/8/22 handle exception
+      log.error(msg);
+      throw new RuntimeException();
+    }
+  }
+
+  // it is not wise to use @Transactional on the whole method because
+  // currencyRateProvider.updateCurrencyRates use calls to external services which are slow
+  @Override
+  public CurrencyRateQuoteNameUpdateStatusData handleCurrencyRateQuoteNameUpdate(String providerUrl) {
+
+    if (currencyRateProviderFactory.getProviderIdFromRestEndpoint(providerUrl) != null) {
+      CurrencyRateProvider currencyRateProvider = currencyRateProviderFactory
+          .get(currencyRateProviderFactory.getProviderIdFromRestEndpoint(providerUrl));
+
+      if (currencyRateProvider.isUpdateCurrencyRateQuoteNamesSupported()) {
+
+        List<CurrencyRateQuoteNameUpdateDTO> updateDTOS = currencyRateProvider.updateCurrencyRateQuoteNames();
+        Map<String, CurrencyQuoteNameEntity> allQuotesNames = getAllQuotesNames();
+        List<CurrencyQuoteNameEntity> entitiesToBeSaved = new ArrayList<>();
+        List<CurrencyRateQuoteNameUpdateDTO> canNotBeSaved = new ArrayList<>();
+
+        // open transaction manually
+        TransactionTemplate transactionTemplate = new TransactionTemplate(transactionManager);
+        transactionTemplate.execute(new TransactionCallbackWithoutResult() {
+          @Override
+          protected void doInTransactionWithoutResult(org.springframework.transaction.TransactionStatus status) {
+
+            for (CurrencyRateQuoteNameUpdateDTO crqn : updateDTOS) {
+              if (allQuotesNames.containsKey(crqn.getCode())) {
+                canNotBeSaved.add(crqn);
+              } else {
+                entitiesToBeSaved.add(currencyRateMapper.entityFromCurrencyRateQuoteUpdateNameDto(crqn));
+              }
+            }
+            currencyQuoteNameRepository.saveAll(entitiesToBeSaved);
+          }
+        });
+
+        return CurrencyRateQuoteNameUpdateStatusData.builder()
+                .updatedCurrencyRateQuoteNames(
+                    currencyRateMapper.currencyQuoteNameEntityToDtoToList(entitiesToBeSaved))
+                .failedToBeSaved(canNotBeSaved)
+                .providerName(currencyRateProvider.getCurrencyRateProviderId())
+            .build();
+
+      } else {
+        // TODO: 10/18/22 handle and create custom exception
+        String msg =
+            "Currency Provider does not support update currency rate qute names provider --> " + providerUrl;
+        log.error(msg);
+        throw new RuntimeException();
+      }
+    } else {
+      // TODO: 10/18/22 handle and create custom exception
+      String msg =
+          "No implementation of this currency rate provider or no provider ID "
+              + "is associated with the provided endpoint: " + providerUrl;
       log.error(msg);
       throw new RuntimeException();
     }

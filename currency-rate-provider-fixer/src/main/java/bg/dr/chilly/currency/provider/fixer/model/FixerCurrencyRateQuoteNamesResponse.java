@@ -11,9 +11,11 @@ import lombok.experimental.FieldDefaults;
 @Data
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class FixerNamesResponse {
+public class FixerCurrencyRateQuoteNamesResponse {
 
+  // Returns true or false depending on whether your API request has succeeded.
   Boolean success;
+  // Returns all supported currencies with their respective three-letter currency codes and names.
   Map<String, String> symbols = new HashMap<>();
 
 }
